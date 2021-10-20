@@ -20,7 +20,6 @@
 package dam.psp.ud1.t1;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +42,7 @@ public class Main {
             Comando necesario a ejecutar: 
             <Path_to_VirtualBox_executable>\\vboxmanage list vms 
          */
-        System.out.printf("Ejercicio 1:%n");
+        Logger.getLogger("Inicio ejercicio 1");
         ejercicio1(vboxPath, executable);
         /*
         Ejercicio 2): A partir del nombre de la máquina virtual modificar su ram
