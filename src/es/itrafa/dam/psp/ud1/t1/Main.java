@@ -17,14 +17,19 @@
  * Ejercicio 4): Agregar una descripción a una máquina:
  * Comando necesario a ejecutar: C:\\Program Files\\Oracle\\VirtualBox\\vboxmanage modifyvm "nombremáquina" --description "xxxx"
  */
-package dam.psp.ud1.t1;
+package es.itrafa.dam.psp.ud1.t1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -35,37 +40,43 @@ import java.util.regex.Pattern;
  * @author rafa
  */
 public class Main {
-
-    static final Logger LOGGER
-            = Logger.getLogger(Main.class.getName());
-
+    static final Logger rootLog = Logger.getLogger("");
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        LOGGER.info("INICIO TAREA PSP_UD1_T1");
+        rootLog.setLevel(Level.INFO);
+        rootLog.getHandlers()[0].setLevel(Level.ALL);
+        
+        
+        rootLog.finest("INICIO TAREA PSP_UD1_T1");
+
+        // Variables necesarias para todos los ejercicios
         List<String> vmInVBoxList;
-        String vboxPath, executable;
+        Path exeVboxPath = Paths.get("C:\\Program Files\\Oracle\\VirtualBox\\vboxmanage");
 
-        vboxPath = "C:\\Program Files\\Oracle\\VirtualBox\\";
-        executable = "vboxmanage";
+        // Comprobamos ejecutable
+        rootLog.info(String.format("Comprobamos ejecutable \"%s\"", exeVboxPath));
+        if (checkPath(exeVboxPath)) {
+            rootLog.info(String.format("Archivo \"%s\" existe y tiene permisos de ejecución", exeVboxPath));
+        } else {
+            System.exit(0);
+        }
 
-        /* 
-        Ejercicio 1): Listar las máquinas virtuales que se tiene en Virtual Box 
-            Comando necesario a ejecutar: 
-            <Path_to_VirtualBox_executable>\\vboxmanage list vms
-            Comprobado en máquina:
-            'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' list vms
-         */
-        LOGGER.info("Ejercicio 1 Iniciando");
-        vmInVBoxList = ejercicio1(vboxPath, executable);
-        LOGGER.info("Salida Ejercicio 1");
-        if (vmInVBoxList != null) {
+        //Ejercicio 1): Listar las máquinas virtuales que se tiene en Virtual Box 
+        vmInVBoxList = ejercicio1(exeVboxPath);
+        rootLog.info("Salida Ejercicio 1");
+        if (vmInVBoxList == null) {
+            System.err.println("Error al buscar máquinas virtuales");
+            System.exit(0);
+        } else if (vmInVBoxList.isEmpty()) {
+            System.err.println("No existen máquinas virtuales creadas");
+            System.err.println("El resto de los ejercicios no se podrán ejecutar");
+            System.exit(0);
+        } else {
             vmInVBoxList.forEach((vm) -> {
                 System.out.println(vm);
             });
-        } else {
-            System.out.println("No existen máquinas virtuales creadas");
         }
 
         /*
@@ -76,8 +87,8 @@ public class Main {
             Comprobado en máquina:
             'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --memory 4096
          */
-        LOGGER.info("Ejercicio 2 Iniciando");
-        ejercicio2(vboxPath, executable);
+        rootLog.info("Ejercicio 2 Iniciando");
+        ejercicio2(exeVboxPath);
         /* Ejercicio 3): Apagar desde Java alguna máquina que está arrancada, 
             debéis pedir al usuario los datos necesarios:
             Comando necesario a ejecutar
@@ -85,8 +96,8 @@ public class Main {
             Comprobado en máquina:
             'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 acpipowerbutton
          */
-        LOGGER.info("Ejercicio 3 Iniciando");
-        ejercicio3(vboxPath, executable);
+        rootLog.info("Ejercicio 3 Iniciando");
+        ejercicio3(exeVboxPath);
 
         /* Ejercicio 4): Agregar una descripción a una máquina:
             Comando necesario a ejecutar:
@@ -94,8 +105,8 @@ public class Main {
             Comprobado en máquina:
             'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --description "Win10_1"
          */
-        LOGGER.info("Ejercicio 4 Iniciando");
-        ejercicio4(vboxPath, executable);
+        rootLog.info("Ejercicio 4 Iniciando");
+        ejercicio4(exeVboxPath);
     }
 
     /**
@@ -105,14 +116,18 @@ public class Main {
      * @param executable name of virtualBox executable
      * @return The list with the virtual machine names or null if empty or error
      */
-    static private List<String> ejercicio1(String vboxPath, String executable) {
-        List<String> result = new ArrayList<>();
-        Runtime rt;
+    static private List<String> ejercicio1(Path vboxPath) {
+        rootLog.fine("Ejercicio 1 Iniciando");
+
+        List<String> result = new ArrayList<>(); // lista vm
+        Runtime rt; //  interface with the environment in which the application is running
+        // get system interface of this program 
         rt = Runtime.getRuntime();
+
         try {
             Process pr;
-            LOGGER.info("Ejecutando proceso");
-            pr = rt.exec(vboxPath + executable + " list vms");
+            rootLog.finest("Ejecutando proceso hijo");
+            pr = rt.exec(vboxPath + " list vms");
 
             InputStream input;
             input = pr.getInputStream();
@@ -120,7 +135,7 @@ public class Main {
             BufferedReader br;
             br = new BufferedReader(new InputStreamReader(input));
 
-            LOGGER.info("Salida del proceso");
+            rootLog.info("Salida del proceso");
             String linea;
             String regex = "(\")(.+)(\")(.*)";
             Pattern pattern = Pattern.compile(regex);
@@ -136,24 +151,26 @@ public class Main {
             try {
                 int exitProcess = pr.waitFor();
                 if (exitProcess == 0) {
-                    LOGGER.info("El proceso finalizo correctamente");
-                    return result;
+                    rootLog.info("El proceso finalizo correctamente");
                 } else {
-                    LOGGER.severe(String.format("El proceso finalizo con error%d%n", exitProcess));
+                    rootLog.severe("El proceso finalizo con errores");
 
                 }
 
-            } catch (InterruptedException e) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, e);
+            } catch (InterruptedException ex) { // needed for exec()
+                Logger.getLogger(Main.class.getName()).
+                        log(Level.SEVERE, null, ex.getLocalizedMessage());
+                System.exit(1);
             }
 
-        } catch (IOException ex) { // only for exec()
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) { // needed for InputStreamReader(input)
+            rootLog.severe(String.format("\"Error al ejecutar proceso: %s", ex.getLocalizedMessage()));
+            System.exit(2);
         }
-        return null;
+        return result;
     }
 
-    static private void ejercicio2(String vboxPath, String executable) {
+    static private void ejercicio2(Path vboxPath) {
         /* 
          * PASOS:    
          *  1 Preguntar que máquina desas cambiar - Mostrar opciones vistas
@@ -163,7 +180,7 @@ public class Main {
         System.out.printf("Ejercicio 2 está pendiente%n");
     }
 
-    static private void ejercicio3(String vboxPath, String executable) {
+    static private void ejercicio3(Path vboxPath) {
         /* 
          * PASOS:    
          *  1 Preguntar que máquina desas apagar - Mostrar opciones vistas
@@ -173,7 +190,7 @@ public class Main {
         System.out.printf("Ejercicio 3 está pendiente%n");
     }
 
-    static private void ejercicio4(String vboxPath, String executable) {
+    static private void ejercicio4(Path vboxPath) {
         /* 
          * PASOS:    
          *  1 Seleccionar que mv desas cambiar - Mostrar opciones vistas
@@ -182,5 +199,17 @@ public class Main {
          */
         System.out.printf("Ejercicio 4 está pendiente%n");
 
+    }
+
+    private static boolean checkPath(Path exeVboxPath) {
+        if (!Files.exists(exeVboxPath)) {
+            System.err.printf("El programa \"%s\" no existe%n", exeVboxPath);
+            System.err.printf("Compruebe que virtualBox está instalado y que la ruta coincide%n", exeVboxPath);
+            return false;
+        } else if (!Files.isExecutable(exeVboxPath)) {
+            System.err.printf("El archivo \"%s\" no tiene permisos de ejecución%n", exeVboxPath.getFileName());
+            return false;
+        }
+        return true;
     }
 }
