@@ -1,0 +1,28 @@
+[  INFO] [2021-10-22 17:20:47] es.itrafa.dam.psp.ud1.t1.RunExercises main:
+         Inicio dam_psp_ud1_t1
+[  INFO] [2021-10-22 17:20:47] es.itrafa.dam.psp.ud1.t1.RunExercises checkPath:
+         Comprobamos estado archivo "C:\Program Files\Oracle\VirtualBox\vboxmanage.exe"
+[WARNING] [2021-10-22 17:20:47] es.itrafa.dam.psp.ud1.t1.RunExercises checkPath:
+         La ruta "C:\Program Files\Oracle\VirtualBox" no existe
+
+[  INFO] [2021-10-22 17:20:59] es.itrafa.dam.psp.ud1.t1.RunExercises main:
+         Inicio dam_psp_ud1_t1
+[  INFO] [2021-10-22 17:20:59] es.itrafa.dam.psp.ud1.t1.RunExercises checkPath:
+         Comprobamos estado archivo "C:\Program Files\Oracle\VirtualBox\vboxmanage.exe"
+[WARNING] [2021-10-22 17:20:59] es.itrafa.dam.psp.ud1.t1.RunExercises checkPath:
+         La ruta "C:\Program Files\Oracle\VirtualBox" no existe
+
+[  INFO] [2021-10-22 17:22:45] es.itrafa.dam.psp.ud1.t1.RunExercises main:
+         Inicio dam_psp_ud1_t1
+[  INFO] [2021-10-22 17:22:45] es.itrafa.dam.psp.ud1.t1.RunExercises checkPath:
+         Comprobamos estado archivo "C:\Program Files\Oracle\VirtualBox\vboxmanage.exe"
+[WARNING] [2021-10-22 17:22:45] es.itrafa.dam.psp.ud1.t1.RunExercises checkPath:
+         La ruta "C:\Program Files\Oracle\VirtualBox" no existe
+
+[  INFO] [2021-10-22 17:23:02] es.itrafa.dam.psp.ud1.t1.RunExercises main:
+         Inicio dam_psp_ud1_t1
+[  INFO] [2021-10-22 17:23:02] es.itrafa.dam.psp.ud1.t1.RunExercises checkPath:
+         Comprobamos estado archivo "C:\Program Files\Oracle\VirtualBox\vboxmanage.exe"
+[WARNING] [2021-10-22 17:23:02] es.itrafa.dam.psp.ud1.t1.RunExercises checkPath:
+         La ruta "C:\Program Files\Oracle\VirtualBox" no existe
+

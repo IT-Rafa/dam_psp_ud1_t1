@@ -35,58 +35,74 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import es.itrafa.dam.psp.ud1.t1.AskUser;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
 
 /**
  *
  * @author rafa
  */
-public class Main {
+public class RunExercises {
 
-    private static final Logger LOGGER = Logger.getLogger(Main.class.getSimpleName());
-
-    ;
+    private static final Logger LOGGER = Logger.getLogger(RunExercises.class.getSimpleName());
 
     static {
         Locale.setDefault(new Locale("en", "EN"));
         System.setProperty("java.util.logging.SimpleFormatter.format",
-                "[%4$6s] [%1$tF %1$tT] %3$s: %5$s%n");
+                "[%4$6s] [%1$tF %1$tT] %2$s:%n         %5$s%n");
 
+        FileHandler fileHandler;
+
+        try {
+            fileHandler = new FileHandler("app.log", true);
+            fileHandler.setFormatter(new SimpleFormatter());
+            LOGGER.addHandler(fileHandler);
+
+        } catch (IOException | SecurityException ex) {
+            Logger.getLogger(RunExercises.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        LOGGER.setUseParentHandlers(false);
         LOGGER.info("Inicio dam_psp_ud1_t1");
-
-        // Variables necesarias para todos los ejercicios
-        List<String> vmInVBoxList;
+        List<String> vmList = null;
         Path exeVboxPath = Paths.get("C:\\Program Files\\Oracle\\VirtualBox\\vboxmanage.exe");
 
-        // Comprobamos ejecutable
-        LOGGER.info(String.format("Comprobamos ejecutable \"%s\"", exeVboxPath));
+        //EJERCICIO 1):
+        //Listar las máquinas virtuales que se tiene en Virtual Box
+        System.out.println("Ej 1: Mostrar máquinas virtuales existentes en virtualBox.");
+
+        // Comprobamos estado archivo
         if (checkPath(exeVboxPath)) {
-            LOGGER.info(String.format("El archivo \"%s\" existe y tiene permisos de ejecución", exeVboxPath));
-        } else {
-            System.exit(0);
-        }
 
-        //Ejercicio 1): Listar las máquinas virtuales que se tiene en Virtual Box 
-        vmInVBoxList = ejercicio1(exeVboxPath);
-        LOGGER.info("Salida Ejercicio 1");
-        if (vmInVBoxList == null) {
-            System.err.println("Error al buscar máquinas virtuales");
-            System.exit(0);
-        } else if (vmInVBoxList.isEmpty()) {
-            System.err.println("No existen máquinas virtuales creadas");
-            System.err.println("El resto de los ejercicios no se podrán ejecutar");
-            System.exit(0);
-        } else {
-            for (String vm : vmInVBoxList) {
-                System.out.println(vm);
+            vmList = ejercicio1(exeVboxPath);
+            if (vmList.isEmpty()) {
+                System.err.println("virtualBox no tiene máquinas virtuales creadas");
+                System.err.println("El resto de los ejercicios no podrán realizarse");
+                System.exit(0);
+
+            } else {
+                for (String vm : vmList) {
+                    System.out.println(vm);
+                }
+
             }
-
+        } else {
+            System.err.printf("El archivo \"%s\" no existe o no es ejecutable%n",
+                    exeVboxPath);
+            System.err.printf("Los ejercicios no pueden realizarse%n");
+            System.err.printf("Compruebe que virtualBox está instalado"
+                    + " y que la ruta de instación coincide con la indicada%n");
+            System.exit(0);
         }
+        // Ejecutar programa con los argumentos
+
 
         /*
         Ejercicio 2): A partir del nombre de la máquina virtual modificar su ram
@@ -96,7 +112,7 @@ public class Main {
             Comprobado en máquina:
             'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --memory 4096
          */
-        ejercicio2(exeVboxPath, vmInVBoxList);
+        ejercicio2(exeVboxPath, vmList);
         /* Ejercicio 3): Apagar desde Java alguna máquina que está arrancada, 
             debéis pedir al usuario los datos necesarios:
             Comando necesario a ejecutar
@@ -126,9 +142,7 @@ public class Main {
         LOGGER.fine("Ejercicio 1 Iniciando");
 
         List<String> result = new ArrayList<>(); // lista vm
-        Runtime rt; //  interface with the environment in which the application is running
-        // get system interface of this program 
-
+        Runtime rt;
         System.out.printf("Mostramos máquinas virtuales activas en virtualBox:%n");
         rt = Runtime.getRuntime();
 
@@ -172,7 +186,7 @@ public class Main {
                 }
 
             } catch (SecurityException | InterruptedException ex) { // for exec()
-                Logger.getLogger(Main.class.getName()).
+                Logger.getLogger(RunExercises.class.getName()).
                         log(Level.SEVERE, null, ex.getLocalizedMessage());
                 System.exit(1);
             }
@@ -184,66 +198,23 @@ public class Main {
         return result;
     }
 
-    static private void ejercicio2(Path vboxPath, List<String> vmInVBoxList) {
+    static private void ejercicio2(Path vboxPath, List<String> vmList) {
         LOGGER.info("Ejercicio 2 Iniciando");
         LOGGER.severe("Ejercicio 2 En progreso");
-        /* 
-         * PASOS:    
-         *  1 Preguntar que máquina desas cambiar - Mostrar opciones vistas
-         *  2 Preguntar la cantidad de memoria a asignar
-         *  3 Hacer llamada desde nuevo proceso
-         */
-        Scanner inputOp = new Scanner(System.in);
-        final int MAXMEM = 999;
-        final int MINMEM = 0;
-        int maxvm = -1;
-        int op = 0;
 
-        while (op < 1 || op >= maxvm) {
-            System.out.printf("Indique a que máquina virtual desea modificarle1"
-                    + "1 la RAM asignada:%n");
-            maxvm = 1;
-            for (String vm : vmInVBoxList) {
-                System.out.printf("%d: %s%n", maxvm++, vm);
-            }
-            System.out.printf("Seleccionar opción: ");
-            op = inputOp.nextInt();
-            if (op < 1 || op >= maxvm) {
-                System.out.printf("%nOpción no válida. Seleccione una del menú%n");
-            }
-        }
-        LOGGER.info(String.format("Usuario selecciono %s", vmInVBoxList.get(--op)));
+        //  1 Preguntar que máquina desas cambiar - Mostrar opciones vistas
+        String vm = AskUser.chooseVm(vmList);
 
-        int mem = 0;
-        while (mem < 999 || mem >= 999999999) {
-            System.out.printf("Indique la cantidad de memoria RAM que desea asignar (en Megas):");
-            String memSt = inputOp.nextLine();
+        //  2 Preguntar la cantidad de memoria a asignar
+        int mem = AskUser.askMemory();
 
-            System.out.printf("%nIntroducido %s%n", memSt);
-            if (memSt.matches("\\d{3,10}")) {
-                mem = Integer.valueOf(memSt);
-                System.out.printf("%nmem = %d%n", mem);
-            } else {
-                mem = 0;
-            }
-            if (mem < 999 || mem >= 999999999) {
-                System.out.printf("%nOpción no válida. Seleccione una del menú%n");
-            }
-        }
-        /* OUTPUT IF MEM TOO LONG        
-PS D:\source> & 'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --memory 10000000
-VBoxManage.exe: error: Invalid RAM size: 10000000 MB (must be in range [4, 2097152] MB)
-VBoxManage.exe: error: Details: code E_INVALIDARG (0x80070057), component SessionMachine, interface IMachine, callee IUnknown
-VBoxManage.exe: error: Context: "COMSETTER(MemorySize)(ValueUnion.u32)" at line 638 of file VBoxManageModifyVM.cpp
-PS D:\source>
-         */
-
+        //  3 Hacer llamada desde nuevo proceso
         Runtime rt = Runtime.getRuntime();
         Process pr;
         LOGGER.info("Ejecutando proceso hijo");
 
         try {
-            pr = rt.exec(vboxPath + " modifyvm " + vmInVBoxList.get(op) + " --memory " + mem);
+            pr = rt.exec(vboxPath + " modifyvm " + vm + " --memory " + mem);
 
             int exitProcess;
 
@@ -257,10 +228,10 @@ PS D:\source>
 
                 }
             } catch (InterruptedException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RunExercises.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RunExercises.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -289,14 +260,23 @@ PS D:\source>
     }
 
     private static boolean checkPath(Path exeVboxPath) {
+        LOGGER.info(String.format("Comprobamos estado archivo \"%s\"", exeVboxPath));
+
         if (!Files.exists(exeVboxPath)) {
-            System.err.printf("El programa \"%s\" no existe%n", exeVboxPath);
-            System.err.printf("Compruebe que virtualBox está instalado y que la ruta coincide%n", exeVboxPath);
+            if (!Files.exists(exeVboxPath.getParent())) {
+                LOGGER.warning(String.format("La ruta \"%s\" no existe%n", exeVboxPath.getParent()));
+
+            } else {
+                LOGGER.warning(String.format("La ruta e\"%s\" no existe, pero no contiene el archivo %s%n",
+                        exeVboxPath.getParent(), exeVboxPath.getFileName()));
+            }
             return false;
+
         } else if (!Files.isExecutable(exeVboxPath)) {
-            System.err.printf("El archivo \"%s\" no tiene permisos de ejecución%n", exeVboxPath.getFileName());
+            LOGGER.warning(String.format("El archivo \"%s\" existe pero no tiene permisos de ejecución%n", exeVboxPath.getFileName()));
             return false;
         }
+        LOGGER.info(String.format("El archivo \"%s\" existe y tiene permisos de ejecución", exeVboxPath));
         return true;
     }
 
