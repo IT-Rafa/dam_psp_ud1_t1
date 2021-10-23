@@ -1,43 +1,16 @@
 /*
- * Tarea 1
- * Unidad 1 de PSP(Programación de Servicios y Procesos)
- * Módulo DAM (Desarrollo Aplicaciones Multimedia)
- *
- * Enunciado:
- *
- * Ejercicio 1): Listar las máquinas virtuales que se tiene en Virtual Box
- * Comando necesario a ejecutar: C:\\Program Files\\Oracle\\VirtualBox\\vboxmanage list vms
- * 
- * Ejercicio 2): A partir del nombre de la máquina virtual modificar su ram, debéis pedir al usuario los datos necesarios:
- * Comando necesario a ejecutar: C:\\Program Files\\Oracle\\VirtualBox\\vboxmanage modifyvm "nombremáquina" --memory memoria
- * 
- * Ejercicio 3): Apagar desde Java alguna máquina que está arrancada, debéis pedir al usuario los datos necesarios:
- * Comando necesario a ejecutar: C:\\Program Files\\Oracle\\VirtualBox\\vBoxManage controlvm "nombremáquina" acpipowerbutton
- * 
- * Ejercicio 4): Agregar una descripción a una máquina:
- * Comando necesario a ejecutar: C:\\Program Files\\Oracle\\VirtualBox\\vboxmanage modifyvm "nombremáquina" --description "xxxx"
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package es.itrafa.dam.psp.ud1.t1;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import es.itrafa.dam.psp.ud1.t1.AskUser;
-import java.util.logging.FileHandler;
-import java.util.logging.SimpleFormatter;
 
 /**
  *
@@ -45,239 +18,202 @@ import java.util.logging.SimpleFormatter;
  */
 public class RunExercises {
 
-    private static final Logger LOGGER = Logger.getLogger(RunExercises.class.getSimpleName());
+    // Esta ruta dependerá del equipo y la instalación de virtualBox
+    static final private File EXEFILE = new File("C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe");
 
-    static {
-        Locale.setDefault(new Locale("en", "EN"));
-        System.setProperty("java.util.logging.SimpleFormatter.format",
-                "[%4$6s] [%1$tF %1$tT] %2$s:%n         %5$s%n");
-
-        FileHandler fileHandler;
-
-        try {
-            fileHandler = new FileHandler("app.log", true);
-            fileHandler.setFormatter(new SimpleFormatter());
-            LOGGER.addHandler(fileHandler);
-
-        } catch (IOException | SecurityException ex) {
-            Logger.getLogger(RunExercises.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    // mensaje para ver detalles del error en carpeta logs
+    static final private String LOGMSG = "Revise \"logs/dam_psp_ud1_t1.log\" para mas detalles";
 
     /**
      * @param args the command line arguments
-     * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException {
-        LOGGER.setUseParentHandlers(false);
-        LOGGER.info("Inicio dam_psp_ud1_t1");
-        List<String> vmList = null;
-        Path exeVboxPath = Paths.get("C:\\Program Files\\Oracle\\VirtualBox\\vboxmanage.exe");
+    public static void main(String[] args) {
+        // Prepara logs
+        Log.LOGGER.info("INICIO PROGRAMA ****");
 
-        //EJERCICIO 1):
-        //Listar las máquinas virtuales que se tiene en Virtual Box
-        System.out.println("Ej 1: Mostrar máquinas virtuales existentes en virtualBox.");
+        System.out.println("Inicio dam_psp_ud1_t1");
 
-        // Comprobamos estado archivo
-        if (checkPath(exeVboxPath)) {
+        // Variable rellenada en ejercicio 1 y usada los ejercicios 2, 3 y 4
+        List<String> vmNamesList; // Contendrá la lista de nombres de la máquinas virtuales
 
-            vmList = ejercicio1(exeVboxPath);
-            if (vmList.isEmpty()) {
-                System.err.println("virtualBox no tiene máquinas virtuales creadas");
-                System.err.println("El resto de los ejercicios no podrán realizarse");
-                System.exit(0);
+        // Preparar y comprobar ejecutable
+        System.out.println("COMPROBACIÓN PREVIA EJERCICIOS");
 
-            } else {
-                for (String vm : vmList) {
-                    System.out.println(vm);
-                }
-
-            }
-        } else {
-            System.err.printf("El archivo \"%s\" no existe o no es ejecutable%n",
-                    exeVboxPath);
-            System.err.printf("Los ejercicios no pueden realizarse%n");
-            System.err.printf("Compruebe que virtualBox está instalado"
-                    + " y que la ruta de instación coincide con la indicada%n");
+        if (!Util.checkPath(EXEFILE)) {
+            System.err.print("Error al comprobar archivo VBoxManage; ");
+            System.err.println(LOGMSG);
+            System.err.println("Compruebe que virtualBox está instalado y que la ruta de instalación coincide");
             System.exit(0);
         }
-        // Ejecutar programa con los argumentos
+        System.out.println();
 
+        // EJERCICIO 1
+        System.out.println("EJERCICIO 1: Mostrar máquinas virtuales actuales en virtualBox");
+        if ((vmNamesList = ejercicio_1(EXEFILE)) == null) {
+            System.err.print("Error al ejecutar proceso; ");
+            System.err.println(LOGMSG);
+            System.exit(0);
 
-        /*
-        Ejercicio 2): A partir del nombre de la máquina virtual modificar su ram
-            , debéis pedir al usuario los datos necesarios:
-            Comando necesario a ejecutar:
-            <Path_to_VirtualBox_executable>\\vboxmanage modifyvm "nombremáquina" --memory memoria
-            Comprobado en máquina:
-            'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --memory 4096
-         */
-        ejercicio2(exeVboxPath, vmList);
-        /* Ejercicio 3): Apagar desde Java alguna máquina que está arrancada, 
-            debéis pedir al usuario los datos necesarios:
-            Comando necesario a ejecutar
-            <Path_to_VirtualBox_executable>\\vBoxManage controlvm "nombremáquina" acpipowerbutton
-            Comprobado en máquina:
-            'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 acpipowerbutton
-         */
-        ejercicio3(exeVboxPath);
+        } else if (vmNamesList.isEmpty()) {
+            System.err.println("Virtual Box no contiene ninguna máquina virtual actualmente");
+            System.err.println("El resto de los ejercicios no podrán hacerse");
+            System.exit(0);
 
-        /* Ejercicio 4): Agregar una descripción a una máquina:
-            Comando necesario a ejecutar:
-            <Path_to_VirtualBox_executable>\\vboxmanage modifyvm "nombremáquina" --description "xxxx"
-            Comprobado en máquina:
-            'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --description "Win10_1"
-         */
-        ejercicio4(exeVboxPath);
+        } else { // SUCCESS
+            System.out.println("Lista máquinas virtuales:");
+            vmNamesList.forEach(x -> System.out.printf("- %s%n", x));
+            System.out.println();
+        }
+
+        // EJERCICIO 2
+        System.out.println("EJERCICIO 2: Elegir máquina virtual y cambiarle la memoria");
+        if (ejercicio_2(EXEFILE, vmNamesList)) {
+            System.out.println("Memoria asignada con exito");
+        } else {
+            System.out.println("Memoria no se pudo asignar");
+        }
+        System.out.println();
+
+        // EJERCICIO 3
+        System.out.println("EJERCICIO 3: Elegir máquina virtual y apagarla");
+        if (ejercicio_3(EXEFILE, vmNamesList)) {
+            System.out.println("la máquina virtual se está/se ha apagado??");
+        } else {
+            System.out.println("la máquina virtual no se pudo apagar");
+        }
+        System.out.println();
+
+        // EJERCICIO 4
+        System.out.println("EJERCICIO 4: Elegir máquina virtual y ponerle una descripción");
+        if (ejercicio_4(EXEFILE, vmNamesList)) {
+            System.out.println("descripción asignada con éxito a la máquina virtual");
+        } else {
+            System.out.println("descripción no se pudo asignar a la máquina virtual");
+        }
+        System.out.println();
     }
 
     /**
-     * Get the a list of names of actual virtual machines in virtualbox
      *
-     * @param vboxPath String with path where virtuaBox is installed
-     * @param executable name of virtualBox executable
-     * @return The list with the virtual machine names or null if empty or error
+     * @param exeFile
+     * @return
      */
-    static private List<String> ejercicio1(Path vboxPath) {
-        LOGGER.fine("Ejercicio 1 Iniciando");
+    private static List<String> ejercicio_1(File exeFile) {
+        Log.LOGGER.info("----------------------------------------------------");
+        Log.LOGGER.info("INICIO EJERCICIO 1 ****");
+        // lista de solo los nombres de las 
+        List<String> result = new ArrayList<>();
 
-        List<String> result = new ArrayList<>(); // lista vm
-        Runtime rt;
-        System.out.printf("Mostramos máquinas virtuales activas en virtualBox:%n");
-        rt = Runtime.getRuntime();
+        // Preparar argumentos necesarios para capturar lista máquinas virtuales
+        List<String> args = new ArrayList<>();
+        args.add("list");
+        args.add("vms");
 
-        try {
-            Process pr;
-            LOGGER.info("Ejecutando proceso hijo");
-            pr = rt.exec(vboxPath + " list vms");
+        // Generar proceso, ejecutarlo y capturar salida
+        CustomProcess ej1 = new CustomProcess("Ejercicio 1", exeFile, args);
+        ej1.runProcess();
 
-            //Capturando salida consola del proceso
-            InputStream input;
-            input = pr.getInputStream();
-
-            //Preparando lectura salida consola del proceso
-            BufferedReader br;
-            br = new BufferedReader(new InputStreamReader(input));
-
-            //Preparando filtro para string de salida
-            String linea;
-            String regex = "(\")(.+)(\")(.*)";
-            Pattern pattern = Pattern.compile(regex);
-
-            // Leyendo cada línea salida del proceso
-            while ((linea = br.readLine()) != null) {
-                // Filtrando dato que nos interesa (nombre mv)
-                Matcher m = pattern.matcher(linea);
-                if (m.find()) {
-                    result.add(m.group(2));
-                }
+        // Modificar lista para solo mostrar nombres
+        Pattern pattern = Pattern.compile("\"([^\"]*)\"*+");
+        int i = 0;
+        for (String vm : ej1.getStdout()) {
+            Matcher m = pattern.matcher(vm);
+            if (m.find()) {
+                String mvName = m.group(1);
+                Log.LOGGER.info(String.format("Capturado nombre máquina virtual %d: %s", i++, mvName));
+                result.add(mvName);
             }
-            // Fin lectura
-            br.close();
-
-            // Control fin proceso
-            try {
-                int exitProcess = pr.waitFor();
-                if (exitProcess == 0) {
-                    LOGGER.info("El proceso finalizo correctamente");
-                } else {
-                    LOGGER.severe("El proceso finalizo con errores");
-
-                }
-
-            } catch (SecurityException | InterruptedException ex) { // for exec()
-                Logger.getLogger(RunExercises.class.getName()).
-                        log(Level.SEVERE, null, ex.getLocalizedMessage());
-                System.exit(1);
-            }
-
-        } catch (IOException ex) { // needed for InputStreamReader(input)
-            LOGGER.severe(String.format("\"Error al leer salida proceso: %s", ex.getLocalizedMessage()));
-            System.exit(2);
         }
+        Log.LOGGER.info("Lista nombres vm completada");
         return result;
+
     }
 
-    static private void ejercicio2(Path vboxPath, List<String> vmList) {
-        LOGGER.info("Ejercicio 2 Iniciando");
-        LOGGER.severe("Ejercicio 2 En progreso");
+    private static boolean ejercicio_2(File exeFile, List<String> vmNamesList) {
+        Log.LOGGER.info("----------------------------------------------------");
+        Log.LOGGER.info("INICIO EJERCICIO 2 ****");
+        // Usuario elige mv a modificar, según lista
+        String vmName = AskUser.chooseVm(vmNamesList);
 
-        //  1 Preguntar que máquina desas cambiar - Mostrar opciones vistas
-        String vm = AskUser.chooseVm(vmList);
+        // Usuario indica memoria a asignar
+        int mem = AskUser.askMemory(vmName);
 
-        //  2 Preguntar la cantidad de memoria a asignar
-        int mem = AskUser.askMemory();
+        // Preparar argumentos necesarios para asignar memoria a máquina
+        List<String> args = new ArrayList<>();
+        args.add("modifyvm");
+        args.add(vmName);
+        args.add("--memory");
+        args.add(String.format("%d", mem));
 
-        //  3 Hacer llamada desde nuevo proceso
-        Runtime rt = Runtime.getRuntime();
-        Process pr;
-        LOGGER.info("Ejecutando proceso hijo");
-
-        try {
-            pr = rt.exec(vboxPath + " modifyvm " + vm + " --memory " + mem);
-
-            int exitProcess;
-
-            try {
-                exitProcess = pr.waitFor();
-
-                if (exitProcess == 0) {
-                    LOGGER.info("El proceso finalizo correctamente");
-                } else {
-                    LOGGER.severe("El proceso finalizo con errores");
-
-                }
-            } catch (InterruptedException ex) {
-                Logger.getLogger(RunExercises.class.getName()).log(Level.SEVERE, null, ex);
+        // Generar proceso, ejecutarlo y capturar salida
+        CustomProcess ej2 = new CustomProcess("Ejercicio 2", exeFile, args);
+        ej2.runProcess();
+        if (ej2.getExitValue() != 0) {
+            for (String line : ej2.getStdout()) {
+                System.out.print(line);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(RunExercises.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }
-
-    static private void ejercicio3(Path vboxPath) {
-        LOGGER.info("Ejercicio 3 Iniciando");
-        LOGGER.severe("Ejercicio 3 No implantado");
-        /* 
-         * PASOS:    
-         *  1 Preguntar que máquina desas apagar - Mostrar opciones vistas
-         *  2 Comprobar si ya está apagada con proceso intermedio ?
-         *  3 Hacer llamada desde nuevo proceso
+        return ej2.getExitValue() == 0;
+        /* OUTPUT IF MEM TOO LONG        
+PS D:\source> & 'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --memory 10000000
+VBoxManage.exe: error: Invalid RAM size: 10000000 MB (must be in range [4, 2097152] MB)
+VBoxManage.exe: error: Details: code E_INVALIDARG (0x80070057), component SessionMachine, interface IMachine, callee IUnknown
+VBoxManage.exe: error: Context: "COMSETTER(MemorySize)(ValueUnion.u32)" at line 638 of file VBoxManageModifyVM.cpp
+PS D:\source>
          */
     }
 
-    static private void ejercicio4(Path vboxPath) {
-        LOGGER.info("Ejercicio 4 Iniciando");
-        LOGGER.severe("Ejercicio 4 No implantado");
-        /* 
-         * PASOS:    
-         *  1 Seleccionar que mv desas cambiar - Mostrar opciones vistas
-         *  2 Pedir descripción a añadir
-         *  3 Hacer llamada desde nuevo proceso
-         */
+    private static boolean ejercicio_3(File exeFile, List<String> vmNamesList) {
+        Log.LOGGER.info("----------------------------------------------------");
+        Log.LOGGER.info("INICIO EJERCICIO 3 ****");
+        // Usuario elige mv a apagar, según lista (solo encendidas?)
+        String vmName = AskUser.chooseVm(vmNamesList);
 
-    }
+        // Preparar argumentos necesarios para asignar memoria a máquina
+        List<String> args = new ArrayList<>();
+        args.add("controlvm");
+        args.add(vmName);
+        args.add("acpipowerbutton");
 
-    private static boolean checkPath(Path exeVboxPath) {
-        LOGGER.info(String.format("Comprobamos estado archivo \"%s\"", exeVboxPath));
-
-        if (!Files.exists(exeVboxPath)) {
-            if (!Files.exists(exeVboxPath.getParent())) {
-                LOGGER.warning(String.format("La ruta \"%s\" no existe%n", exeVboxPath.getParent()));
-
-            } else {
-                LOGGER.warning(String.format("La ruta e\"%s\" no existe, pero no contiene el archivo %s%n",
-                        exeVboxPath.getParent(), exeVboxPath.getFileName()));
+        // Generar proceso, ejecutarlo y capturar salida
+        CustomProcess ej3 = new CustomProcess("Ejercicio 3", exeFile, args);
+        ej3.runProcess();
+        if (ej3.getExitValue() != 0) {
+            for (String line : ej3.getStdout()) {
+                System.out.print(line);
             }
-            return false;
-
-        } else if (!Files.isExecutable(exeVboxPath)) {
-            LOGGER.warning(String.format("El archivo \"%s\" existe pero no tiene permisos de ejecución%n", exeVboxPath.getFileName()));
-            return false;
         }
-        LOGGER.info(String.format("El archivo \"%s\" existe y tiene permisos de ejecución", exeVboxPath));
-        return true;
+
+        return ej3.getExitValue() == 0;
     }
 
+    private static boolean ejercicio_4(File exeFile, List<String> vmNamesList) {
+        Log.LOGGER.info("----------------------------------------------------");
+        Log.LOGGER.info("INICIO EJERCICIO 4 ****");
+
+        // Usuario elige mv para modificar descripción
+        String vmName = AskUser.chooseVm(vmNamesList);
+
+        // Usuario indica escribe descripción (varias lineas?)
+        String desc = AskUser.askDesc(vmNamesList);
+        
+        // Preparar argumentos necesarios para modificar descripción
+        List<String> args = new ArrayList<>();
+        args.add("modifyvm");
+        args.add(vmName);
+        args.add("--description");
+        args.add(desc);
+        
+        // Generar proceso, ejecutarlo y capturar salida
+        CustomProcess ej4 = new CustomProcess("Ejercicio 4", exeFile, args);
+        ej4.runProcess();
+        if (ej4.getExitValue() != 0) {
+            for (String line : ej4.getStdout()) {
+                System.out.print(line);
+            }
+        }
+
+        return ej4.getExitValue() == 0;
+    }
 }

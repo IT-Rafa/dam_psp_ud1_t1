@@ -20,62 +20,62 @@ public class AskUser {
      * @return
      */
     protected static String chooseVm(List<String> vmList) {
-        String vm;
         int op;
-        boolean validOp;
-
+        String line;
         Scanner inputOp = new Scanner(System.in);
-        op = 0;
-        validOp = false;
-        while (!validOp) {
+        op = -1;
+        Log.LOGGER.info("Pidiendo al usuario que eliga una máquina virtual");
+        while (op < 1 || op > vmList.size()) {
             System.out.printf("Indique a que máquina virtual desea asignarle otra RAM.%n");
             System.out.printf("Máquina virtuales actuales:%n");
             int i = 0;
             for (String eachVm : vmList) {
-                System.out.printf("%d: %s%n", i, eachVm);
+                System.out.printf("%d: %s%n", 1 + i++, eachVm);
             }
-            String opSt = inputOp.nextLine();
-            if (op > 0) {
-                validOp = true;
+            System.out.printf("Escriba el número correspondiente: ");
+            line = inputOp.nextLine();
+            op = Integer.parseUnsignedInt(line);
+            Log.LOGGER.info(String.format("Usuario seleccionó %d", op));
+            if (op < 1 || op > vmList.size()) {
+                Log.LOGGER.info("Seleccion no válida. Repetimos petición");
+                System.out.printf("%nNúmero no válido. Seleccione una de las opciones%n");
             }
-            op = Integer.parseUnsignedInt(opSt, 10);
-
         }
+        Log.LOGGER.info(String.format("Seleccion válida; máquina virtual elegida: %s", vmList.get(op - 1)));
 
-        return vmList.get(op);
+        return vmList.get(op - 1);
     }
 
     /**
      *
+     * @param vmName
      * @return
      */
-    protected static int askMemory() {
-        
-        /* OUTPUT IF MEM TOO LONG        
-PS D:\source> & 'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --memory 10000000
-VBoxManage.exe: error: Invalid RAM size: 10000000 MB (must be in range [4, 2097152] MB)
-VBoxManage.exe: error: Details: code E_INVALIDARG (0x80070057), component SessionMachine, interface IMachine, callee IUnknown
-VBoxManage.exe: error: Context: "COMSETTER(MemorySize)(ValueUnion.u32)" at line 638 of file VBoxManageModifyVM.cpp
-PS D:\source>
-         */
+    protected static int askMemory(String vmName) {
+
+
         int mem;
-        boolean validOp;
-
+        String line;
         Scanner inputOp = new Scanner(System.in);
-        mem = 0;
-        validOp = false;
-        while (!validOp) {
-            System.out.printf("Indique la RAM que desea asignarle.%n");
-            System.out.printf("Máquina virtuales actuales:%n");
+        mem = -1;
+        Log.LOGGER.info("Pidiendo al usuario que indique cantidad memoría");
+        while (mem < 1 || mem > Integer.MAX_VALUE) {
+            System.out.printf("Escriba RAM (en MB) para %s: ", vmName);
 
-            String opSt = inputOp.nextLine();
-            if (mem > 0) {
-                validOp = true;
+            line = inputOp.nextLine();
+            mem = Integer.parseUnsignedInt(line);
+            Log.LOGGER.info(String.format("Usuario escribio %s", line));
+            if (mem < 1 || mem > Integer.MAX_VALUE) {
+                Log.LOGGER.info("cantidad no válida. Repetimos petición");
+                System.out.printf("%nCantidad no válida. El rango es 1-%d%n", Integer.MAX_VALUE);
             }
-            mem = Integer.parseUnsignedInt(opSt, 10);
-
         }
+        Log.LOGGER.info(String.format("Cantidad válida; RAM a asignar: %d", mem));
 
         return mem;
+    }
+
+    static String askDesc(List<String> vmNamesList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
