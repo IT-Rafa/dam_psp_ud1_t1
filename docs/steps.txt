@@ -1,0 +1,67 @@
+
+Resumen enunciado:
+El programa mostrará un menú que permitirá al usuario ejecutar las siguientes operaciones:
+
+ Ejercicio 1): Listar las máquinas virtuales que se tiene en Virtual Box 
+ Ejercicio 2): A partir del nombre de la máquina virtual modificar su ram, debéis pedir al usuario los datos necesarios: 
+ Ejercicio 3): Apagar desde Java alguna máquina que está arrancada, debéis pedir al usuario los datos necesarios: 
+ Ejercicio 4): Agregar una descripción a una máquina:
+ 
+Una vez que el usuario elija fin de programa debes eliminar el proceso.
+
+
+-- INICIO
+	GUARDAR RUTA EJECUTABLE
+	COMPROBAR RUTA EJECUTABLE (virtual box: vbmanage
+	MENU PRINCIPAL
+	EJECUTAR exercise_x SEGÚN OPCIÓN
+	
+-- GUARDAR RUTA EJECUTABLE
+	accesible para paquete
+	
+-- COMPROBAR RUTA EJECUTABLE: (sin programa no se puede hacer nada)
+COMPROBAR EXISTENCIA ARCHIVO
+	SI EXISTE Y ES EJECUTABLE NO HACER NADA
+	SI NO MOSTRAR UI.MENSAJE CAUSA AL USUARIO Y SALIR
+
+-- MENU PRINCIPAL: mostrar menú y ejecutar según opción
+UI.MOSTRAR MENÚ
+ELEGIR OPCIÓN
+COMPROBAR OPCIÓN
+
+
+OP 0: FIN PROGRAMA
+OP 1: exercise_1
+OP 2: exercise_2
+OP 3: exercise_3
+OP 4: exercise_4
+
+-- exercise_1:
+PEDIR LISTA VM
+	SI OK
+		UI.MOSTRAR LISTA
+	SI VACIA O KO 
+		UI.MOSTRAR AVISO
+		
+-- PEDIR LISTA VM
+	PROCESO PEDIR LISTA
+	MODIFICAR SALIDA PROCESO PARA COGER SOLO LOS NOMBRES
+	
+-- exercise_2: A partir del nombre de la máquina virtual modificar su ram, debéis pedir al usuario los datos necesarios: 
+PEDIR LISTA VM
+UI.MOSTRAR MENÚ_VM Y SELECCIONAR ELEMENTO
+COMPROBAR ELEMENTO
+	SI KO VOLVER A MENÚ_VM Y SELECCIONAR ELEMENTO
+UI.PEDIR RAM
+COMPROBAR RAM
+ENVIAR PETICIÓN: CAMBIO RAM
+
+-- exercise_3: Apagar desde Java alguna máquina que está arrancada, debéis pedir al usuario los datos necesarios: 
+PEDIR LISTA VM
+
+-- exercise_4: Agregar una descripción a una máquina:
+PEDIR LISTA VM
+-- CAPTURAR LISTA MÁQUINAS VIRTUALES:
+	PEDIR LISTA VM AL VBOX (muestra mas que el nombre)
+	MODIFICAR CADA ELEMENTO LISTA PARA SOLO COGER NOMBRE
+	DEJAR ACCESIBLE PARA TODOS LOS EJERCICIOS

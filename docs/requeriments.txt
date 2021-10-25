@@ -1,0 +1,8 @@
+- check path at first - no exercise can do if vbox there isn´t in the expected path
+- List of vms must be used to all exercises.
+- independent UI - easy to change
+- Unify process
+	- input command
+	- stdout
+	- stderr
+

@@ -1,4 +1,8 @@
 /*
+ * File Name
+ * Project 
+ * Causa: Tarea para 
+ *
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6,28 +10,52 @@
 package es.itrafa.dam.psp.ud1.t1;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Resumen enunciado: El programa mostrará un menú que permitirá al usuario
+ * ejecutar las siguientes operaciones: Ejercicio 1): Listar las máquinas
+ * virtuales que se tiene en Virtual Box Ejercicio 2): A partir del nombre de la
+ * máquina virtual modificar su ram, debéis pedir al usuario los datos
+ * necesarios: Ejercicio 3): Apagar desde Java alguna máquina que está
+ * arrancada, debéis pedir al usuario los datos necesarios: Ejercicio 4):
+ * Agregar una descripción a una máquina:
+ *
  *
  * @author rafa
  */
-public class RunExercises {
+public class Run_dam_psp_ud1_t1 {
 
     // Esta ruta dependerá del equipo y la instalación de virtualBox
     static final private File EXEFILE = new File("C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe");
 
-    // mensaje para ver detalles del error en carpeta logs
-    static final private String LOGMSG = "Revise \"logs/dam_psp_ud1_t1.log\" para mas detalles";
+    public static void main(String[] args) {
+
+        // Prepara logs
+        Log.LOGGER.info("INICIO PROGRAMA ****");
+
+        // Comprobación instalación previa programa virtualBox
+        /*
+        if (!Util.checkPath(EXEFILE)) {
+            UI.showNofoundExe();
+            System.exit(1);
+        }
+         */
+        // Mostrar menú
+        int op;
+        op = UI.showMenu();
+        
+        op = 
+
+    }
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    private static void runExercises(String[] args) {
         // Prepara logs
         Log.LOGGER.info("INICIO PROGRAMA ****");
 
@@ -39,19 +67,11 @@ public class RunExercises {
         // Preparar y comprobar ejecutable
         System.out.println("COMPROBACIÓN PREVIA EJERCICIOS");
 
-        if (!Util.checkPath(EXEFILE)) {
-            System.err.print("Error al comprobar archivo VBoxManage; ");
-            System.err.println(LOGMSG);
-            System.err.println("Compruebe que virtualBox está instalado y que la ruta de instalación coincide");
-            System.exit(0);
-        }
-        System.out.println();
-
         // EJERCICIO 1
         System.out.println("EJERCICIO 1: Mostrar máquinas virtuales actuales en virtualBox");
         if ((vmNamesList = ejercicio_1(EXEFILE)) == null) {
             System.err.print("Error al ejecutar proceso; ");
-            System.err.println(LOGMSG);
+            System.err.println();
             System.exit(0);
 
         } else if (vmNamesList.isEmpty()) {
@@ -133,10 +153,10 @@ public class RunExercises {
         Log.LOGGER.info("----------------------------------------------------");
         Log.LOGGER.info("INICIO EJERCICIO 2 ****");
         // Usuario elige mv a modificar, según lista
-        String vmName = AskUser.chooseVm(vmNamesList);
+        String vmName = UI.chooseVm(vmNamesList);
 
         // Usuario indica memoria a asignar
-        int mem = AskUser.askMemory(vmName);
+        int mem = UI.askMemory(vmName);
 
         // Preparar argumentos necesarios para asignar memoria a máquina
         List<String> args = new ArrayList<>();
@@ -173,7 +193,7 @@ PS D:\source>
         Log.LOGGER.info("----------------------------------------------------");
         Log.LOGGER.info("INICIO EJERCICIO 3 ****");
         // Usuario elige mv a apagar, según lista (solo encendidas?)
-        String vmName = AskUser.chooseVm(vmNamesList);
+        String vmName = UI.chooseVm(vmNamesList);
 
         // Preparar argumentos necesarios para asignar memoria a máquina
         List<String> args = new ArrayList<>();
@@ -198,18 +218,18 @@ PS D:\source>
         Log.LOGGER.info("INICIO EJERCICIO 4 ****");
 
         // Usuario elige mv para modificar descripción
-        String vmName = AskUser.chooseVm(vmNamesList);
+        String vmName = UI.chooseVm(vmNamesList);
 
         // Usuario indica escribe descripción (varias lineas?)
-        String desc = AskUser.askDesc(vmNamesList);
-        
+        String desc = UI.askDesc(vmName);
+
         // Preparar argumentos necesarios para modificar descripción
         List<String> args = new ArrayList<>();
         args.add("modifyvm");
         args.add(vmName);
         args.add("--description");
         args.add(desc);
-        
+
         // Generar proceso, ejecutarlo y capturar salida
         CustomProcess ej4 = new CustomProcess("Ejercicio 4", exeFile, args);
         ej4.runProcess();
@@ -221,4 +241,5 @@ PS D:\source>
 
         return ej4.getExitValue() == 0;
     }
+
 }

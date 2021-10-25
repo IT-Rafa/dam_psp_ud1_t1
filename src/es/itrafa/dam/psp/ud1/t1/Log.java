@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -21,13 +20,15 @@ import java.util.logging.SimpleFormatter;
 public class Log {
 
     protected static final Logger LOGGER = Logger.getLogger(Log.class.getSimpleName());
-    private static final File FOLDER = new File("logs/dam_psp_ud1_t1.log");
+    private static final File FILELOG = new File("logs//dam_psp_ud1_t1.log");
 
     static {
 
         try {
-            FOLDER.delete();
-            FOLDER.createNewFile();
+        File path = new File(FILELOG.getPath());
+        path.mkdirs();
+        FILELOG.delete();
+        FILELOG.createNewFile();
             
         } catch (IOException ex) {
             LOGGER.severe(String.format("Error LOGGER: %s%n", ex));
@@ -39,7 +40,7 @@ public class Log {
         FileHandler fileHandler;
 
         try {
-            fileHandler = new FileHandler(FOLDER.getPath(), true);
+            fileHandler = new FileHandler(FILELOG.getPath(), true);
             fileHandler.setFormatter(new SimpleFormatter());
             LOGGER.addHandler(fileHandler);
 

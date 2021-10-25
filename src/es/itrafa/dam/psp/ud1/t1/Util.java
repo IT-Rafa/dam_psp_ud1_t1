@@ -21,15 +21,20 @@ public class Util {
     protected static boolean checkPath(File exeFile) {
         if (exeFile.isFile()) {
             if (exeFile.canExecute()) {
-                Log.LOGGER.info(String.format("Localizado archivo con permiso ejecución válido:%n     \"%s\"", exeFile));
+                Log.LOGGER.info(
+                        String.format(
+                                "Localizado archivo "
+                                + "con permiso ejecución válido:%n     \"%s\"", exeFile));
                 return true; // SUCCESS
 
             } else {
-                Log.LOGGER.warning(String.format("Archivo ejecutable \"%s\" existe pero no se puede ejecutar", exeFile));
-
+                Log.LOGGER.warning(
+                        String.format("Archivo ejecutable \"%s\" "
+                                + " existe pero no se puede ejecutar", exeFile));
             }
         } else {
-            Log.LOGGER.warning(String.format("Archivo ejecutable \"%s\" no existe", exeFile));
+            Log.LOGGER.warning(
+                    String.format("Archivo ejecutable \"%s\" no existe", exeFile));
         }
         return false;
     }
