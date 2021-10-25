@@ -12,8 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -142,7 +141,6 @@ public class CustomProcess {
 
         } catch (InterruptedException ex) {// for waitfor
             Log.LOGGER.severe(String.format("Error al ejecutar proceso hijo de %s", EXERCISE));
-            Logger.getLogger(CustomProcess.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
