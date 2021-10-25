@@ -5,8 +5,8 @@
         <group>
             <file>file:/D:/source/dam/psp/dam_psp_ud1_t1/src/es/itrafa/dam/psp/ud1/t1/Log.java</file>
             <file>file:/D:/source/dam/psp/dam_psp_ud1_t1/src/es/itrafa/dam/psp/ud1/t1/RunExercises.java</file>
-            <file>file:/D:/source/dam/psp/dam_psp_ud1_t1/logs/app.log</file>
-            <file>file:/D:/source/dam/psp/dam_psp_ud1_t1/src/es/itrafa/dam/psp/ud1/t1/OutProcess.java</file>
+            <file>file:/D:/source/dam/psp/dam_psp_ud1_t1/src/es/itrafa/dam/psp/ud1/t1/CustomProcess.java</file>
+            <file>file:/D:/source/dam/psp/dam_psp_ud1_t1/src/es/itrafa/dam/psp/ud1/t1/AskUser.java</file>
             <file>file:/D:/source/dam/psp/dam_psp_ud1_t1/src/es/itrafa/dam/psp/ud1/t1/Util.java</file>
         </group>
     </open-files>

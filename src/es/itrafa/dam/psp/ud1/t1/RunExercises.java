@@ -158,6 +158,11 @@ public class RunExercises {
         /* OUTPUT IF MEM TOO LONG        
 PS D:\source> & 'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm Win10_1 --memory 10000000
 VBoxManage.exe: error: Invalid RAM size: 10000000 MB (must be in range [4, 2097152] MB)
+[  INFO] [2021-10-23 09:21:09] es.itrafa.dam.psp.ud1.t1.AskUser chooseVm:
+--> Usuario seleccionó 1
+[  INFO] [2021-10-23 09:21:09] es.itrafa.dam.psp.ud1.t1.AskUser chooseVm:
+--> Seleccion válida; máquina virtual elegida: Win10_1
+[  INFO] [2021-10-23 09:21:09] es.itrafa.dam.psp.ud1.t1.AskUser askMemory:
 VBoxManage.exe: error: Details: code E_INVALIDARG (0x80070057), component SessionMachine, interface IMachine, callee IUnknown
 VBoxManage.exe: error: Context: "COMSETTER(MemorySize)(ValueUnion.u32)" at line 638 of file VBoxManageModifyVM.cpp
 PS D:\source>
