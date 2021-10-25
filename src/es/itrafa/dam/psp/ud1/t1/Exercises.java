@@ -36,7 +36,7 @@ public class Exercises {
 
         List<String> args = new ArrayList<>();
         args.add("modifyvm");
-        args.add("vmName");
+        args.add(vmName);
         args.add("--memory");
         args.add(memCant);
 
@@ -48,12 +48,32 @@ public class Exercises {
         Log.LOGGER.info("Iniciando Ejercicio 3 ****");
         String vmName = UI.chooseVm(getVMNames(vboxManageFile));
 
+        CustomProcess ej1;
+
+        List<String> args = new ArrayList<>();
+        args.add("controlvm");
+        args.add(vmName);
+        args.add("acpipowerbutton");
+
+        ej1 = new CustomProcess("ejercicio 3", vboxManageFile, args);
+        ej1.runProcess();
     }
 
     static void runExercise4(File vboxManageFile) {
         Log.LOGGER.info("Iniciando Ejercicio 4 ****");
         String vmName = UI.chooseVm(getVMNames(vboxManageFile));
+        String description = UI.askDesc(vmName);
 
+        CustomProcess ej1;
+
+        List<String> args = new ArrayList<>();
+        args.add("modifyvm");
+        args.add(vmName);
+        args.add("--description");
+        args.add(description);
+
+        ej1 = new CustomProcess("ejercicio 2", vboxManageFile, args);
+        ej1.runProcess();
     }
 
     private static List<String> getVMNames(File vboxManageFile) {
