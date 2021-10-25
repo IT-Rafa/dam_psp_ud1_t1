@@ -18,15 +18,22 @@ import java.util.regex.Pattern;
 public class Exercises {
 
     static void runExercise1(File vboxManageFile) {
-        Log.LOGGER.info("Iniciando Ejercicio 1 ****");
-        List<String> vmNames;
+        // SE EJECUTO OK SIN SALIDA
 
-        vmNames = getVMNames(vboxManageFile);
-        UI.outputExercise1(vmNames);
+        Log.LOGGER.info("Iniciando Ejercicio FAKE 1 ****");
+
+        CustomProcess ej1;
+        List<String> args = new ArrayList<>();
+
+
+        ej1 = new CustomProcess("ejercicio 1F", vboxManageFile, args);
+        ej1.runProcess();
 
     }
 
     static void runExercise2(File vboxManageFile) {
+        // SE EJECUTO OK CON SALIDA OK
+
         Log.LOGGER.info("Iniciando Ejercicio 2 ****");
 
         String vmName = UI.chooseVm(getVMNames(vboxManageFile));
@@ -45,6 +52,7 @@ public class Exercises {
     }
 
     static void runExercise3(File vboxManageFile) {
+        // SE EJECUTO OK SIN SALIDA
         Log.LOGGER.info("Iniciando Ejercicio 3 ****");
         String vmName = UI.chooseVm(getVMNames(vboxManageFile));
 
@@ -60,6 +68,7 @@ public class Exercises {
     }
 
     static void runExercise4(File vboxManageFile) {
+        // NO SE EJECUTO 
         Log.LOGGER.info("Iniciando Ejercicio 4 ****");
         String vmName = UI.chooseVm(getVMNames(vboxManageFile));
         String description = UI.askDesc(vmName);
@@ -105,4 +114,29 @@ public class Exercises {
         return null;
     }
 
+    /**
+     *
+     * @param exeFile
+     * @return
+     */
+    protected static boolean checkPath(File exeFile) {
+        if (exeFile.isFile()) {
+            if (exeFile.canExecute()) {
+                Log.LOGGER.info(
+                        String.format(
+                                "Localizado archivo "
+                                + "con permiso ejecución válido:%n     \"%s\"", exeFile));
+                return true; // SUCCESS
+
+            } else {
+                Log.LOGGER.warning(
+                        String.format("Archivo ejecutable \"%s\" "
+                                + " existe pero no se puede ejecutar", exeFile));
+            }
+        } else {
+            Log.LOGGER.warning(
+                    String.format("Archivo ejecutable \"%s\" no existe", exeFile));
+        }
+        return false;
+    }
 }

@@ -39,8 +39,6 @@ public class UI {
         switch (op) {
             case 0:
                 Log.LOGGER.info("Usuario seleccionó opción Salir");
-                Log.LOGGER.info("FIN PROGRAMA ****");
-                System.exit(0);
             case 1:
             case 2:
             case 3:
@@ -175,5 +173,36 @@ public class UI {
             System.out.println();
         }
 
+    }
+
+    static void showEmptyList(String listName) {
+        System.out.printf("no existen %s actualmente%n", listName);
+    }
+
+    static void showFullOutput(CustomProcess ej1) {
+        for (String line : ej1.getStdout()) {
+            System.out.println(line);
+        }
+
+        for (String line : ej1.getStderr()) {
+            System.out.println(line);
+        }
+    }
+
+    static void showNoNamesError() {
+        System.out.println("Error al filtrar los nombres de las máquinas actuales");
+    }
+
+    static void showList(String title, List<String> list) {
+        System.out.println(title);
+        for(int i=0; i<title.length(); i++){
+            System.out.printf("%c", '=');
+        }
+        System.out.println();
+        
+        for (String element : list) {
+            System.out.println(element);
+        }
+        System.out.println();
     }
 }

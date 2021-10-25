@@ -10,10 +10,6 @@
 package es.itrafa.dam.psp.ud1.t1;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Resumen enunciado: El programa mostrará un menú que permitirá al usuario
@@ -30,13 +26,14 @@ import java.util.regex.Pattern;
 public class Init {
 
     // Esta ruta dependerá del equipo y la instalación de virtualBox
-    static final private File EXEFILE = new File("C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe");
+    //static final private File EXEFILE = new File("C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe");
+    static final private File EXEFILE = new File("C:\\Windows\\System32\\more.com");
 
     public static void main(String[] args) {
         Log.LOGGER.info("INICIO PROGRAMA ****");
 
         // Comprobación instalación previa programa virtualBox
-        if (!Util.checkPath(EXEFILE)) {
+        if (!ExercisesFake.checkPath(EXEFILE)) {
             UI.showNofoundExeMsg();
             System.exit(1);
         }
@@ -59,17 +56,20 @@ public class Init {
     private static void runExercise(int op) {
 
         switch (op) {
+            case 0:
+                Log.LOGGER.info("FIN PROGRAMA ****");
+                System.exit(0);
             case 1:
-                Exercises.runExercise1(EXEFILE);
+                ExercisesFake.runExercise1(EXEFILE);
                 break;
             case 2:
-                Exercises.runExercise2(EXEFILE);
+                ExercisesFake.runExercise2(EXEFILE);
                 break;
             case 3:
-                Exercises.runExercise3(EXEFILE);
+                ExercisesFake.runExercise3(EXEFILE);
                 break;
             case 4:
-                Exercises.runExercise4(EXEFILE);
+                ExercisesFake.runExercise4(EXEFILE);
                 break;
         }
 
