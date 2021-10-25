@@ -26,7 +26,7 @@ public class CustomProcess {
     private final File EXEFILE;
     private final List<String> ARGS;
     //output
-    private int exitValue;
+    private Integer exitValue;
     private List<String> stdout;
     private List<String> stderr;
 
@@ -43,14 +43,14 @@ public class CustomProcess {
     /**
      * @return the exitValue
      */
-    public int getExitValue() {
+    public Integer getExitValue() {
         return exitValue;
     }
 
     /**
      * @param exitValue the exitValue to set
      */
-    public void setExitValue(int exitValue) {
+    private void setExitValue(int exitValue) {
         this.exitValue = exitValue;
     }
 
@@ -64,7 +64,7 @@ public class CustomProcess {
     /**
      * @param output the output to set
      */
-    public void setStdout(List<String> stdout) {
+    private void setStdout(List<String> stdout) {
         this.stdout = stdout;
     }
 
@@ -78,7 +78,7 @@ public class CustomProcess {
     /**
      * @param stderr
      */
-    public void setStderr(List<String> stderr) {
+    private void setStderr(List<String> stderr) {
         this.stderr = stderr;
     }
 
@@ -100,10 +100,12 @@ public class CustomProcess {
 
         }
 
-        Log.LOGGER.info(String.format("Ejecutando proceso hijo de %s%n    %s", EXERCISE, command));
+        Log.LOGGER.info(String.format("Ejecutando proceso hijo de %s:%n    %s", EXERCISE, command));
         try {
+            // Ejecuta proceso hijo
             pr = rt.exec(command);
 
+            // Captura las salidas que se van produciendo (stdout y stderr)
             inpStr = pr.getInputStream();
             inpStrReader = new InputStreamReader(inpStr);
             inpBuffReader = new BufferedReader(inpStrReader);
@@ -120,11 +122,13 @@ public class CustomProcess {
             while ((errLine = errBuffReader.readLine()) != null) {
                 stdout.add(errLine);
             }
+            
+            // Captura valor retorno al final del programa
             this.exitValue = pr.waitFor();
             if (this.exitValue == 0) {
                 Log.LOGGER.info(String.format("Proceso hijo de %s realizado con éxito", EXERCISE));
             } else {
-                Log.LOGGER.warning(String.format("Proceso hijo de %s realizado con errores", EXERCISE));
+                Log.LOGGER.warning(String.format("Proceso hijo de %s realizado pero hubo errores", EXERCISE));
             }
 
         } catch (IOException ex) { // for exec
