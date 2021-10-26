@@ -18,28 +18,60 @@ import java.util.regex.Pattern;
 public class Exercises {
 
     static void runExercise1(File vboxManageFile) {
-        // SE EJECUTO OK SIN SALIDA
-
-        Log.LOGGER.info("Iniciando Ejercicio FAKE 1 ****");
-
+        Log.LOGGER.info("Iniciando Ejercicio 1 ****");
         CustomProcess ej1;
+        List<String> vmNamesList = new ArrayList<>();
+
         List<String> args = new ArrayList<>();
-
-
-        ej1 = new CustomProcess("ejercicio 1F", vboxManageFile, args);
+        args.add("list");
+        args.add("vms");
+        ej1 = new CustomProcess("ejercicio 1", vboxManageFile, args);
         ej1.runProcess();
 
+        if (ej1.getExitValue() == null) {
+            UI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
+            UI.showErrMsg(Init.LOGMSG);
+
+        } else if (ej1.getExitValue() != 0) {
+            String msg = String.format("vboxmanage devolvió error %d", ej1.getExitValue());
+            UI.showErrMsg(msg);
+            UI.showErrorProcessOutput(ej1);
+
+        } else {
+            if (ej1.getStdout().isEmpty()) {
+                UI.showInfoMsg("No existen máquinas virtuales actualmente");
+
+            } else {
+                // Create a Pattern object
+                Pattern r = Pattern.compile("\"(.*)\".*$");
+
+                // Now create matcher object.
+                for (String line : ej1.getStdout()) {
+                    Matcher m = r.matcher(line);
+                    if (m.find()) {
+                        vmNamesList.add(m.group(1));
+                    }
+                }
+
+                if (vmNamesList.isEmpty()) {
+                    UI.showInfoMsg("Error al filtrar los nombres "
+                            + "de las máquinas virtuales de la lista enviada por vboxmanage");
+
+                } else {
+                    UI.showList("Lista máquinas virtuales activas", vmNamesList);
+
+                }
+            }
+        }
     }
 
     static void runExercise2(File vboxManageFile) {
-        // SE EJECUTO OK CON SALIDA OK
-
         Log.LOGGER.info("Iniciando Ejercicio 2 ****");
-
-        String vmName = UI.chooseVm(getVMNames(vboxManageFile));
+        List<String> vmList = getVMNames(vboxManageFile, false);
+        String vmName = UI.chooseVm(vmList, false);
         String memCant = UI.askMemory(vmName);
 
-        CustomProcess ej1;
+        CustomProcess ej2;
 
         List<String> args = new ArrayList<>();
         args.add("modifyvm");
@@ -47,51 +79,99 @@ public class Exercises {
         args.add("--memory");
         args.add(memCant);
 
-        ej1 = new CustomProcess("ejercicio 2", vboxManageFile, args);
-        ej1.runProcess();
+        ej2 = new CustomProcess("ejercicio 2", vboxManageFile, args);
+        ej2.runProcess();
+
+        if (ej2.getExitValue() == null) {
+            UI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
+            UI.showErrMsg(Init.LOGMSG);
+
+        } else if (ej2.getExitValue() != 0) {
+            String msg = String.format("vboxmanage devolvió error %d", ej2.getExitValue());
+            UI.showErrMsg(msg);
+            UI.showErrorProcessOutput(ej2);
+
+        } else {
+            String msg = String.format("Se le asignó %s de RAM a a máquina virtual %s%n", memCant, vmName);
+            UI.showInfoMsg(msg);
+        }
     }
 
     static void runExercise3(File vboxManageFile) {
-        // SE EJECUTO OK SIN SALIDA
         Log.LOGGER.info("Iniciando Ejercicio 3 ****");
-        String vmName = UI.chooseVm(getVMNames(vboxManageFile));
 
-        CustomProcess ej1;
+        List<String> vmList = getVMNames(vboxManageFile, true);
+        String vmName = UI.chooseVm(vmList, true);
+
+        CustomProcess ej3;
 
         List<String> args = new ArrayList<>();
         args.add("controlvm");
         args.add(vmName);
         args.add("acpipowerbutton");
 
-        ej1 = new CustomProcess("ejercicio 3", vboxManageFile, args);
-        ej1.runProcess();
+        ej3 = new CustomProcess("ejercicio 2", vboxManageFile, args);
+        ej3.runProcess();
+
+        if (ej3.getExitValue() == null) {
+            UI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
+            UI.showErrMsg(Init.LOGMSG);
+
+        } else if (ej3.getExitValue() != 0) {
+            String msg = String.format("vboxmanage devolvió el error %d", ej3.getExitValue());
+            UI.showErrMsg(msg);
+            UI.showErrorProcessOutput(ej3);
+
+        } else {
+            String msg = String.format("La máquina virtual %s se está? apagando%n", vmName);
+            UI.showInfoMsg(msg);
+        }
     }
 
     static void runExercise4(File vboxManageFile) {
-        // NO SE EJECUTO 
         Log.LOGGER.info("Iniciando Ejercicio 4 ****");
-        String vmName = UI.chooseVm(getVMNames(vboxManageFile));
-        String description = UI.askDesc(vmName);
-
-        CustomProcess ej1;
+        
+        List<String> vmList = getVMNames(vboxManageFile, false);
+        String vmName = UI.chooseVm(vmList, false);
+        String desc = UI.askDesc(vmName);
+        String descQuotes = "\"" + desc + "\"";
+        CustomProcess ej4;
 
         List<String> args = new ArrayList<>();
         args.add("modifyvm");
         args.add(vmName);
         args.add("--description");
-        args.add(description);
+        args.add(descQuotes);
 
-        ej1 = new CustomProcess("ejercicio 2", vboxManageFile, args);
-        ej1.runProcess();
+        ej4 = new CustomProcess("ejercicio 4", vboxManageFile, args);
+        ej4.runProcess();
+
+        if (ej4.getExitValue() == null) {
+            UI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
+            UI.showErrMsg(Init.LOGMSG);
+
+        } else if (ej4.getExitValue() != 0) {
+            String msg = String.format("vboxmanage devolvió error %d", ej4.getExitValue());
+            UI.showErrMsg(msg);
+            UI.showErrorProcessOutput(ej4);
+
+        } else {
+            String msg = String.format("%nSe le asignó la nueva descripción a la máquina virtual %s%n", vmName);
+            UI.showInfoMsg(msg);
+        }
     }
 
-    private static List<String> getVMNames(File vboxManageFile) {
+    private static List<String> getVMNames(File vboxManageFile, boolean onlyRunning) {
         List<String> vmNames = new ArrayList<>();
         CustomProcess ej1;
 
         List<String> args = new ArrayList<>();
         args.add("list");
-        args.add("vms");
+        if (onlyRunning) {
+            args.add("runningvms ");
+        } else {
+            args.add("vms");
+        }
 
         ej1 = new CustomProcess("ejercicio 1", vboxManageFile, args);
         ej1.runProcess();

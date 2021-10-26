@@ -27,8 +27,8 @@ public class CustomProcess {
     private final List<String> ARGS;
     //output
     private Integer exitValue;
-    private List<String> stdout;
-    private List<String> stderr;
+    private final List<String> stdout;
+    private final List<String> stderr;
 
     // CONSTRUCTOR
     public CustomProcess(String ejercicio, File exeFile, List<String> args) {
@@ -48,13 +48,6 @@ public class CustomProcess {
     }
 
     /**
-     * @param exitValue the exitValue to set
-     */
-    private void setExitValue(int exitValue) {
-        this.exitValue = exitValue;
-    }
-
-    /**
      * @return the output
      */
     public List<String> getStdout() {
@@ -62,24 +55,10 @@ public class CustomProcess {
     }
 
     /**
-     * @param output the output to set
-     */
-    private void setStdout(List<String> stdout) {
-        this.stdout = stdout;
-    }
-
-    /**
      * @return the output
      */
     public List<String> getStderr() {
         return stderr;
-    }
-
-    /**
-     * @param stderr
-     */
-    private void setStderr(List<String> stderr) {
-        this.stderr = stderr;
     }
 
     public void runProcess() {
@@ -128,7 +107,7 @@ public class CustomProcess {
             if (this.exitValue == 0) {
                 Log.LOGGER.info(String.format("Proceso hijo de %s realizado con éxito", EXERCISE));
             } else {
-                Log.LOGGER.warning(String.format("Proceso hijo de %s realizado pero hubo errores", EXERCISE));
+                Log.LOGGER.warning(String.format("Proceso hijo de %s realizado pero devolvió error %d", EXERCISE, this.exitValue));
             }
 
         } catch (IOException ex) { // for exec

@@ -26,15 +26,18 @@ import java.io.File;
 public class Init {
 
     // Esta ruta dependerá del equipo y la instalación de virtualBox
-    //static final private File EXEFILE = new File("C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe");
-    static final private File EXEFILE = new File("C:\\Windows\\System32\\more.com");
+    private static final File EXEFILE = new File("C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe");
+    // Esta ruta dependerá del equipo y la instalación de virtualBox
+    public static final String LOGMSG = "Revise \"logs/dam_psp_ud1_t1.log\" para mas detalles";
 
     public static void main(String[] args) {
         Log.LOGGER.info("INICIO PROGRAMA ****");
 
         // Comprobación instalación previa programa virtualBox
-        if (!ExercisesFake.checkPath(EXEFILE)) {
-            UI.showNofoundExeMsg();
+        if (!Exercises.checkPath(EXEFILE)) {
+            UI.showErrMsg("Error al comprobar archivo VBoxManage; ");
+            UI.showErrMsg(LOGMSG);
+            UI.showErrMsg("Compruebe que virtualBox está instalado y que la ruta de instalación coincide");
             System.exit(1);
         }
         // Mostrar menú
@@ -60,16 +63,16 @@ public class Init {
                 Log.LOGGER.info("FIN PROGRAMA ****");
                 System.exit(0);
             case 1:
-                ExercisesFake.runExercise1(EXEFILE);
+                Exercises.runExercise1(EXEFILE);
                 break;
             case 2:
-                ExercisesFake.runExercise2(EXEFILE);
+                Exercises.runExercise2(EXEFILE);
                 break;
             case 3:
-                ExercisesFake.runExercise3(EXEFILE);
+                Exercises.runExercise3(EXEFILE);
                 break;
             case 4:
-                ExercisesFake.runExercise4(EXEFILE);
+                Exercises.runExercise4(EXEFILE);
                 break;
         }
 

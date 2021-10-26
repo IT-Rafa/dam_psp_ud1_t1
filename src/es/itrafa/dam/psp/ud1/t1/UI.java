@@ -7,6 +7,8 @@ package es.itrafa.dam.psp.ud1.t1;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -14,15 +16,13 @@ import java.util.Scanner;
  */
 public class UI {
 
-    static final private String LOGMSG = "Revise \"logs/dam_psp_ud1_t1.log\" para mas detalles";
-
     protected static int mainMenu() {
         Log.LOGGER.info("Mostramos menú de ejercicios");
         int op;
         System.out.printf("Menú PSP_UD1_T1: VirtualBox%n");
         System.out.printf("===========================%n");
         System.out.printf("1 : Ej_1: Mostrar máquinas virtuales%n");
-        System.out.printf("2 : Ej_2: Cambiar nombre a máquina virtual%n");
+        System.out.printf("2 : Ej_2: Cambiar RAM a máquina virtual%n");
         System.out.printf("3 : Ej_3: Apagar máquina virtual%n");
         System.out.printf("4 : Ej_4: Cambiar descripción a máquina virtual%n");
         System.out.printf("0 : Finalizar programa%n");
@@ -45,7 +45,6 @@ public class UI {
             case 4:
                 Log.LOGGER.info(String.format(
                         "Usuario seleccionó Ejercicio %d", op));
-                System.out.println();
                 return op;
             default:
                 Log.LOGGER.warning("Usuario seleccionó opción errónea");
@@ -58,19 +57,28 @@ public class UI {
     /**
      *
      * @param vmList
+     * @param isRunning
      * @return
      */
-    protected static String chooseVm(List<String> vmList) {
+    protected static String chooseVm(List<String> vmList, boolean onlyRunning) {
         int op;
         String line;
         Scanner inputOp = new Scanner(System.in);
 
         op = -1;
         while (op < 1 || op > vmList.size()) {
-            Log.LOGGER.info("Mostrando lista de nombres de máquinas virtuales");
-            System.out.printf(
-                    "Seleccione máquina virtual a la que desea modificarle la RAM.%n");
-            System.out.printf("Lista Máquinas virtuales actuales:%n");
+            if (onlyRunning) {
+                Log.LOGGER.info("Mostrando lista de nombres de máquinas virtuales encendidas");
+                System.out.printf(
+                        "Seleccione máquina virtual%n");
+                System.out.printf("Lista Máquinas virtuales actuales encendidas:%n");
+                
+            } else {
+                Log.LOGGER.info("Mostrando lista de nombres de máquinas virtuales");
+                System.out.printf(
+                        "Seleccione máquina virtual%n");
+                System.out.printf("Lista Máquinas virtuales actuales:%n");
+            }
             int i = 0;
             for (String eachVm : vmList) {
                 System.out.printf("%d: %s%n", 1 + i++, eachVm);
@@ -129,14 +137,6 @@ public class UI {
      * @return
      */
     protected static String askDesc(String vmName) {
-        /*
-            --description <desc>:
-            Changes the VM's description, which is a way to record details about
-            the VM in a way which is meaningful for the user. The GUI interprets 
-            HTML formatting, the command line allows arbitrary strings potentially
-            containing multiple lines.
-         */
- /* El programa admite varias lineas y formato html */
         String line;
         Scanner inputOp = new Scanner(System.in);
 
@@ -150,59 +150,51 @@ public class UI {
         return line;
     }
 
-    static void showNofoundExeMsg() {
-        System.err.print("Error al comprobar archivo VBoxManage; ");
-        System.err.println(LOGMSG);
-        System.err.println("Compruebe que virtualBox está instalado y que la ruta de instalación coincide");
-        System.exit(0);
-    }
-
-    static void outputExercise1(List<String> vmNames) {
-        if (vmNames == null) {
-            System.out.println("Hubo problemas para capturar los nombres de las máquinas virtuales actuales");
-            System.out.println(LOGMSG);
-
-        } else if (vmNames.isEmpty()) {
-            System.out.println("No existe ninguna máquina virtual actualmente");
-
-        } else {
-            System.out.println("Lista de nombres de máquinas virtuales");
-            for (String vmName : vmNames) {
-                System.out.println(vmName);
+    static void showErrorProcessOutput(CustomProcess ej) {
+        // flush() y thread.sleep "sincronizan" las salidas de err y out
+        try {
+            System.err.println("A continuación se muestra la salida de vboxmanage:");
+            System.err.flush();
+            Thread.sleep(1);
+            for (String line : ej.getStdout()) {
+                System.out.println(line);
+                System.out.flush();
+                Thread.sleep(1);
             }
+
+            for (String line : ej.getStderr()) {
+                System.err.println(line);
+                System.err.flush();
+                Thread.sleep(1);
+            }
+            System.out.println("Fin salida");
             System.out.println();
+        } catch (InterruptedException ex) {
+            Log.LOGGER.warning("Problema con truco para mostrar salida");
         }
 
     }
 
-    static void showEmptyList(String listName) {
-        System.out.printf("no existen %s actualmente%n", listName);
+    static void showInfoMsg(String message) {
+        System.out.println(message);
     }
 
-    static void showFullOutput(CustomProcess ej1) {
-        for (String line : ej1.getStdout()) {
-            System.out.println(line);
-        }
-
-        for (String line : ej1.getStderr()) {
-            System.out.println(line);
-        }
-    }
-
-    static void showNoNamesError() {
-        System.out.println("Error al filtrar los nombres de las máquinas actuales");
+    static void showErrMsg(String message) {
+        System.err.println(message);
     }
 
     static void showList(String title, List<String> list) {
+
         System.out.println(title);
-        for(int i=0; i<title.length(); i++){
+        for (int i = 0; i < title.length(); i++) {
             System.out.printf("%c", '=');
         }
         System.out.println();
-        
+
         for (String element : list) {
             System.out.println(element);
         }
         System.out.println();
     }
+
 }
