@@ -23,153 +23,29 @@ import java.util.Scanner;
 public class ConsoleUI {
 
     protected static int mainMenu() {
-        int op;
         String menuTitle = "Menú PSP_UD1_T1: vBox ejercicios";
         List<String> optionsMenu = new ArrayList<>();
+
         optionsMenu.add("Ej_1: Mostrar máquinas virtuales");
         optionsMenu.add("Ej_2: Cambiar RAM a máquina virtual");
         optionsMenu.add("Ej_3: Apagar máquina virtual");
         optionsMenu.add("Ej_4: Cambiar descripción a máquina virtual");
         optionsMenu.add("Finalizar programa");
 
-        return getOpFromMenu(menuTitle, optionsMenu);
+        return ConsoleUtil.getOpFromMenu(menuTitle, optionsMenu);
     }
 
-    /**
-     * Show a console menu with the title, and the options from arguments. This
-     * menu will be displayed again until a right option be selected by user.
-     * The options are numbered correlatively from one.
-     *
-     * @param menuTitle String title of menu
-     * @param optionsMenu List<String> List of options to show
-     * @return int - The option selected by user
-     */
-    private static int getOpFromMenu(String menuTitle, List<String> optionsMenu) {
-        int op;
+    protected static int vmAllMenu() {
+        String menuTitle = "Menú PSP_UD1_T1: vBox ejercicios";
+        List<String> optionsMenu = new ArrayList<>();
 
-        int maxLenght; // cant of chars for menu border == The longest line
-        maxLenght = menuTitle.length();
+        optionsMenu.add("Ej_1: Mostrar máquinas virtuales");
+        optionsMenu.add("Ej_2: Cambiar RAM a máquina virtual");
+        optionsMenu.add("Ej_3: Apagar máquina virtual");
+        optionsMenu.add("Ej_4: Cambiar descripción a máquina virtual");
+        optionsMenu.add("Finalizar programa");
 
-        do {
-            // Calcule max lenght of options
-            for (String opMenu : optionsMenu) {
-                if (opMenu.length() > maxLenght) {
-                    maxLenght = opMenu.length();
-                }
-            }
-            // Menu Header
-            maxLenght += 6;
-            for (int i = 0; i < maxLenght; i++) {
-                System.out.printf("%c", '*');
-            }
-            System.out.println();
-            System.out.println("*  " + maxLenght + "  *");
-            for (int i = 0; i < maxLenght; i++) {
-                System.out.printf("%c", '*');
-            }
-            System.out.println();
-
-            // Menu options 
-            int opNum = 1; // Options start with one
-            for (String opMenu : optionsMenu) {
-                System.out.printf("*  %d: %-11s", opNum++, opMenu);
-                System.out.printf("  *%n");
-            }
-            for (int i = 0; i < maxLenght; i++) {
-                System.out.printf("%c", '*');
-            }
-            System.out.println();
-            System.out.print("Seleccione una opción: ");
-
-            // ask user to select a option 
-            try {
-                Scanner input = new Scanner(System.in);
-                op = input.nextInt();
-            } catch (InputMismatchException ex) {
-                op = 0;
-            }
-            // check if is a valid option
-            if (op < 1 || op > optionsMenu.size()) {
-                System.out.printf("Opción no válida. Seleccione opción del menú%n%n");
-                op = 0;
-            }
-        } while (op == 0); // zero is never a valid option
-
-        return op;
-    }
-
-    /**
-     * Show message in console and ask user for int
-     *
-     * @param menuTitle String title of menu
-     * @param optionsMenu List<String> List of options to show
-     * @return int - The option selected by user
-     */
-    private static int askForInt(String question, int min, int max) {
-        int userInt;
-        do {
-
-            System.out.print(question);
-
-            try {
-                Scanner input = new Scanner(System.in);
-                userInt = input.nextInt();
-            } catch (InputMismatchException ex) {
-                userInt = min - 1;
-            }
-
-            if (userInt < min || userInt > max) {
-                System.out.print("Valor fuera de rango o no válido.");
-                System.out.printf("%nReintente o introduzca -1 para cancelar%n%n");
-                userInt = min - 1;
-            }
-        } while (userInt == min - 1);
-
-        return userInt;
-    }
-
-    /**
-     * Muestra menú por consola y recibe opción y la comprueba Repite si se
-     * introduce opción errónea.
-     *
-     * @return int: opción elegida válida
-     */
-    protected static int mainMenu2() {
-        Log.LOGGER.info("Mostramos menú de ejercicios");
-        int op;
-        System.out.printf("Menú PSP_UD1_T1: vBox ejercicios%n");
-        System.out.printf("===========================%n");
-        System.out.printf("1 : Ej_1: Mostrar máquinas virtuales%n");
-        System.out.printf("2 : Ej_2: Cambiar RAM a máquina virtual%n");
-        System.out.printf("3 : Ej_3: Apagar máquina virtual%n");
-        System.out.printf("4 : Ej_4: Cambiar descripción a máquina virtual%n");
-        System.out.printf("0 : Finalizar programa%n");
-        System.out.printf("%nSeleccione una opción: ");
-
-        Log.LOGGER.info("Esperando selección del usuario");
-        Scanner inputOp = new Scanner(System.in);
-        try {
-            op = inputOp.nextInt();
-        } catch (java.util.InputMismatchException ex) {
-            op = -1; // 
-        }
-
-        switch (op) {
-            case 0:
-                Log.LOGGER.info("Usuario seleccionó opción Salir");
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                Log.LOGGER.info(String.format(
-                        "Usuario seleccionó Ejercicio %d", op));
-                return op;
-            default:
-                Log.LOGGER.warning("Usuario seleccionó opción errónea");
-                System.out.printf("Opción introducida no válida. Seleccione una opción del menú%n%n", op);
-                return mainMenu();
-        }
-
+        return ConsoleUtil.getOpFromMenu(menuTitle, optionsMenu);
     }
 
     /**
@@ -228,6 +104,8 @@ public class ConsoleUI {
                 String.format(
                         "Seleccion usuario válida; Máquina virtual elegida: %s",
                         vmList.get(op - 1)));
+
+        System.out.println();
         if (op == 0) {
             return "";
         } else {
@@ -253,17 +131,27 @@ public class ConsoleUI {
 
         mem = -1;
         Log.LOGGER.info("Pidiendo al usuario que indique cantidad memoría");
-        while (mem < 0 || mem > maxMem) {
-            System.out.printf("Escriba RAM (en MB) para %s(0 para anular): ", vmName);
+        while (mem < minMem || mem > maxMem) {
+            System.out.printf("Escriba RAM (en MB) para %s (0 para anular): ", vmName);
             line = inputOp.nextLine();
 
             // pasamos a int para comprobar rango
-            mem = Integer.parseUnsignedInt(line);
-            Log.LOGGER.info(String.format("Usuario escribio %s", line));
-            if (mem < minMem || mem > Integer.MAX_VALUE) {
+            try {
+                mem = Integer.parseUnsignedInt(line);
+                if (mem == 0) {
+                    return ""; // cancelar
+
+                } else if (mem < minMem || mem > Integer.MAX_VALUE) {
+                    Log.LOGGER.info(String.format("valor introducido: %d no es válido", mem));
+                    System.out.printf("Valor no válido. Introduzca un número, sin otros símbolos, entre %d y %d%n%n", minMem, maxMem);
+
+                }
+            } catch (NumberFormatException ex) {
                 Log.LOGGER.info(String.format("valor introducido: %d no es válido", mem));
-                System.out.printf("%nCantidad no válida. El rango es %d-%d%n", minMem, maxMem);
+                System.out.printf("Valor no válido. Introduzca un número, sin otros símbolos, entre %d y %d%n%n", minMem, maxMem);
+
             }
+
         }
         Log.LOGGER.info(String.format("valor introducido: %d es válido", mem));
         return String.format("%d", mem);
@@ -280,13 +168,13 @@ public class ConsoleUI {
         Scanner inputOp = new Scanner(System.in);
 
         Log.LOGGER.info("Pidiendo la descripción que se quiere asignar a máquina virtual");
-        System.out.printf("Escriba descripción para %s: ", vmName);
+        System.out.printf("Escriba descripción para %s (Deje vacio para cancelar): ", vmName);
 
         line = inputOp.nextLine();
 
         Log.LOGGER.info("Descripción capturada");
 
-        return "\"" + line + "\"";
+        return line;
     }
 
     static void showErrorProcessOutput(CustomProcess ej) {
@@ -309,7 +197,7 @@ public class ConsoleUI {
             System.out.println("Fin salida");
             System.out.println();
         } catch (InterruptedException ex) {
-            Log.LOGGER.warning("Problema con truco para mostrar salida");
+            Log.LOGGER.warning("Fallo truco para mostrar salida sincronizada");
         }
 
     }

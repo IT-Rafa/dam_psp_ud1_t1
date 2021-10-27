@@ -11,6 +11,9 @@
 package es.itrafa.dam.psp.ud1.t1;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Define la puesta en marcha de la tarea
@@ -38,15 +41,20 @@ public class Init {
         }
 
         // INICIO TAREA
-        // El menú se mostrará cada vez que finalize cada ejercicio hasta
-        // que usuario elija salir
         while (true) {
             int op;
-            op = ConsoleUI.mainMenu();
+            String menuTitle = "Menú PSP_UD1_T1: vBox ejercicios";
+            List<String> optionsMenu = new ArrayList<>();
+
+            optionsMenu.add("Ej_1: Mostrar máquinas virtuales");
+            optionsMenu.add("Ej_2: Cambiar RAM a máquina virtual");
+            optionsMenu.add("Ej_3: Apagar máquina virtual");
+            optionsMenu.add("Ej_4: Cambiar descripción a máquina virtual");
+            optionsMenu.add("FIN PROGRAMA");
+            op = ConsoleUtil.getOpFromMenu(menuTitle, optionsMenu);
+
             switch (op) {
-                case 0:
-                    Log.LOGGER.info("FIN PROGRAMA ****");
-                    System.exit(0);
+
                 case 1:
                     Exercises.runExercise1(EXEFILE);
                     break;
@@ -59,7 +67,14 @@ public class Init {
                 case 4:
                     Exercises.runExercise4(EXEFILE);
                     break;
+                case 5:
+                    Log.LOGGER.info("FIN PROGRAMA ****");
+                    System.exit(0);
+
             }
+            ConsoleUtil.pressReturnKey("Presione Enter para volver a mostrar menú");
         }
+
     }
+
 }

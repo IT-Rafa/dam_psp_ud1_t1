@@ -67,10 +67,37 @@ public class Exercises {
 
     static void runExercise2(File vboxManageFile) {
         Log.LOGGER.info("Iniciando Ejercicio 2 ****");
+        ConsoleUI.showInfoMsg("Cambiar memoria asignada a una máquina virtual");
+
+        String menuTitle = "Lista máquinas virtuales";
+
         List<String> vmList = getVMNames(vboxManageFile, false);
-        String vmName = ConsoleUI.chooseVm(vmList, false);
+
+        if (vmList.isEmpty()) {
+            vmList.add("CANCELAR; No existen máquinas virtuales");
+        } else {
+            vmList.add("CANCELAR EJERCICIO");
+        }
+
+        int vmNum = ConsoleUtil.getOpFromMenu(menuTitle, vmList);
+
+        if (vmNum == vmList.size()) { // opcion cancelar
+            Log.LOGGER.info("Seleccion cancelada por usuario");
+            ConsoleUI.showInfoMsg("Ejercicio cancelado");
+            return;
+
+        } else {
+            vmNum--; // ajustar indice con menú
+        }
+        String vmName = vmList.get(vmNum);
+
         String memCant = ConsoleUI.askMemory(vmName);
 
+        if (memCant.isEmpty()) { // opcion cancelar
+            Log.LOGGER.info("Operación cancelada por usuario");
+            ConsoleUI.showInfoMsg("Ejercicio cancelado");
+            return;
+        }
         CustomProcess ej2;
 
         List<String> args = new ArrayList<>();
@@ -99,9 +126,28 @@ public class Exercises {
 
     static void runExercise3(File vboxManageFile) {
         Log.LOGGER.info("Iniciando Ejercicio 3 ****");
+        ConsoleUI.showInfoMsg("Apagar máquina virtual");
 
+        String menuTitle = "Lista máquinas virtuales encendidas";
         List<String> vmList = getVMNames(vboxManageFile, true);
-        String vmName = ConsoleUI.chooseVm(vmList, true);
+
+        if (vmList.isEmpty()) {
+            vmList.add("CANCELAR EJERCICIO; Ninguna máquina virtual está encendida");
+        } else {
+            vmList.add("CANCELAR EJERCICIO");
+        }
+
+        int vmNum = ConsoleUtil.getOpFromMenu(menuTitle, vmList);
+
+        if (vmNum == vmList.size()) { // opcion cancelar
+            Log.LOGGER.info("Seleccion cancelada por usuario");
+            ConsoleUI.showInfoMsg("Ejercicio cancelado");
+            return;
+
+        } else {
+            vmNum--; // ajustar indice con menú
+        }
+        String vmName = vmList.get(vmNum);
 
         CustomProcess ej3;
 
@@ -123,18 +169,50 @@ public class Exercises {
             ConsoleUI.showErrorProcessOutput(ej3);
 
         } else {
-            String msg = String.format("La máquina virtual %s se está? apagando%n", vmName);
+            String msg = String.format("La máquina virtual %s se ha apagado", vmName);
+            String aviso = String.format("Aviso: Las máquinas virtuales con W10 a mi no se me apagaron%n");
             ConsoleUI.showInfoMsg(msg);
+            ConsoleUI.showInfoMsg(aviso);
         }
     }
 
     static void runExercise4(File vboxManageFile) {
-        Log.LOGGER.info("Iniciando Ejercicio 4 ****");
-        
+       Log.LOGGER.info("Iniciando Ejercicio 4 ****");
+        ConsoleUI.showInfoMsg("Cambiar descripción asignada a una máquina virtual");
+
+        String menuTitle = "Lista máquinas virtuales";
+
         List<String> vmList = getVMNames(vboxManageFile, false);
-        String vmName = ConsoleUI.chooseVm(vmList, false);
+
+        if (vmList.isEmpty()) {
+            vmList.add("CANCELAR; No existen máquinas virtuales");
+        } else {
+            vmList.add("CANCELAR EJERCICIO");
+        }
+
+        int vmNum = ConsoleUtil.getOpFromMenu(menuTitle, vmList);
+
+        if (vmNum == vmList.size()) { // opcion cancelar
+            Log.LOGGER.info("Seleccion cancelada por usuario");
+            ConsoleUI.showInfoMsg("Ejercicio cancelado");
+            return;
+
+        } else {
+            vmNum--; // ajustar indice con menú
+        }
+        String vmName = vmList.get(vmNum);
+
+
         String desc = ConsoleUI.askDesc(vmName);
+        System.out.print(desc);
+        if (desc.isEmpty()) { // opcion cancelar
+            Log.LOGGER.info("Operación cancelada por usuario");
+            ConsoleUI.showInfoMsg("Ejercicio cancelado");
+            return;
+        }
         String descQuotes = "\"" + desc + "\"";
+        
+        
         CustomProcess ej4;
 
         List<String> args = new ArrayList<>();
@@ -164,16 +242,18 @@ public class Exercises {
     private static List<String> getVMNames(File vboxManageFile, boolean onlyRunning) {
         List<String> vmNames = new ArrayList<>();
         CustomProcess ej1;
-
+        String descProceso;
         List<String> args = new ArrayList<>();
         args.add("list");
         if (onlyRunning) {
             args.add("runningvms ");
+            descProceso = "captura vm actuales";
         } else {
             args.add("vms");
+            descProceso = "captura vm iniciadas";
         }
 
-        ej1 = new CustomProcess("ejercicio 1", vboxManageFile, args);
+        ej1 = new CustomProcess(descProceso, vboxManageFile, args);
         ej1.runProcess();
 
         if (ej1.getExitValue() == 0) {
