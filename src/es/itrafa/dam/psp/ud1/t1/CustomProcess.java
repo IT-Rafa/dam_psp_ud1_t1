@@ -18,7 +18,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  *
  * @author it-ra
@@ -43,7 +42,6 @@ public class CustomProcess {
         this.stdout = new ArrayList<>();
         this.stderr = new ArrayList<>();
     }
-    
 
     /**
      * @return the exitValue
@@ -106,7 +104,7 @@ public class CustomProcess {
             while ((errLine = errBuffReader.readLine()) != null) {
                 stdout.add(errLine);
             }
-            
+
             // Captura valor retorno al final del programa
             this.exitValue = pr.waitFor();
             if (this.exitValue == 0) {
@@ -114,6 +112,9 @@ public class CustomProcess {
             } else {
                 Log.LOGGER.warning(String.format("Proceso hijo de %s realizado pero devolvió error %d", EXERCISE, this.exitValue));
             }
+
+            Log.LOGGER.info(String.format("Proceso hijo de %s eliminado", EXERCISE));
+            pr.destroy();
 
         } catch (IOException ex) { // for exec
             Log.LOGGER.severe(String.format("Error de entrada/salida al intentar ejecutar el proceso hijo de %s", EXERCISE));
