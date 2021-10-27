@@ -1,4 +1,9 @@
 /*
+ * File Name: Log.java
+ * Project: dam_psp_ud1_t1
+ * Enunciado completo en docs
+ * Causa: Tarea para 
+ *
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -14,13 +19,15 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 /**
- *
+ * Gestiona configuración log; Formato, archivo salida, ...
  * @author it-ra
  */
 public class Log {
 
     protected static final Logger LOGGER = Logger.getLogger(Log.class.getSimpleName());
     private static final File FILELOG = new File("logs//dam_psp_ud1_t1.log");
+    // Mensage genérico información log
+    protected static final String LOGMSG = "Revise \"logs/dam_psp_ud1_t1.log\" para mas detalles";
 
     static {
 

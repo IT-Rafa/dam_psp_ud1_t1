@@ -29,17 +29,17 @@ public class Exercises {
         ej1.runProcess();
 
         if (ej1.getExitValue() == null) {
-            UI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
-            UI.showErrMsg(Init.LOGMSG);
+            ConsoleUI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
+            ConsoleUI.showErrMsg(Log.LOGMSG);
 
         } else if (ej1.getExitValue() != 0) {
             String msg = String.format("vboxmanage devolvió error %d", ej1.getExitValue());
-            UI.showErrMsg(msg);
-            UI.showErrorProcessOutput(ej1);
+            ConsoleUI.showErrMsg(msg);
+            ConsoleUI.showErrorProcessOutput(ej1);
 
         } else {
             if (ej1.getStdout().isEmpty()) {
-                UI.showInfoMsg("No existen máquinas virtuales actualmente");
+                ConsoleUI.showInfoMsg("No existen máquinas virtuales actualmente");
 
             } else {
                 // Create a Pattern object
@@ -54,11 +54,11 @@ public class Exercises {
                 }
 
                 if (vmNamesList.isEmpty()) {
-                    UI.showInfoMsg("Error al filtrar los nombres "
+                    ConsoleUI.showInfoMsg("Error al filtrar los nombres "
                             + "de las máquinas virtuales de la lista enviada por vboxmanage");
 
                 } else {
-                    UI.showList("Lista máquinas virtuales activas", vmNamesList);
+                    ConsoleUI.showList("Lista máquinas virtuales activas", vmNamesList);
 
                 }
             }
@@ -68,8 +68,8 @@ public class Exercises {
     static void runExercise2(File vboxManageFile) {
         Log.LOGGER.info("Iniciando Ejercicio 2 ****");
         List<String> vmList = getVMNames(vboxManageFile, false);
-        String vmName = UI.chooseVm(vmList, false);
-        String memCant = UI.askMemory(vmName);
+        String vmName = ConsoleUI.chooseVm(vmList, false);
+        String memCant = ConsoleUI.askMemory(vmName);
 
         CustomProcess ej2;
 
@@ -83,17 +83,17 @@ public class Exercises {
         ej2.runProcess();
 
         if (ej2.getExitValue() == null) {
-            UI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
-            UI.showErrMsg(Init.LOGMSG);
+            ConsoleUI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
+            ConsoleUI.showErrMsg(Log.LOGMSG);
 
         } else if (ej2.getExitValue() != 0) {
             String msg = String.format("vboxmanage devolvió error %d", ej2.getExitValue());
-            UI.showErrMsg(msg);
-            UI.showErrorProcessOutput(ej2);
+            ConsoleUI.showErrMsg(msg);
+            ConsoleUI.showErrorProcessOutput(ej2);
 
         } else {
             String msg = String.format("Se le asignó %s de RAM a a máquina virtual %s%n", memCant, vmName);
-            UI.showInfoMsg(msg);
+            ConsoleUI.showInfoMsg(msg);
         }
     }
 
@@ -101,7 +101,7 @@ public class Exercises {
         Log.LOGGER.info("Iniciando Ejercicio 3 ****");
 
         List<String> vmList = getVMNames(vboxManageFile, true);
-        String vmName = UI.chooseVm(vmList, true);
+        String vmName = ConsoleUI.chooseVm(vmList, true);
 
         CustomProcess ej3;
 
@@ -114,17 +114,17 @@ public class Exercises {
         ej3.runProcess();
 
         if (ej3.getExitValue() == null) {
-            UI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
-            UI.showErrMsg(Init.LOGMSG);
+            ConsoleUI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
+            ConsoleUI.showErrMsg(Log.LOGMSG);
 
         } else if (ej3.getExitValue() != 0) {
             String msg = String.format("vboxmanage devolvió el error %d", ej3.getExitValue());
-            UI.showErrMsg(msg);
-            UI.showErrorProcessOutput(ej3);
+            ConsoleUI.showErrMsg(msg);
+            ConsoleUI.showErrorProcessOutput(ej3);
 
         } else {
             String msg = String.format("La máquina virtual %s se está? apagando%n", vmName);
-            UI.showInfoMsg(msg);
+            ConsoleUI.showInfoMsg(msg);
         }
     }
 
@@ -132,8 +132,8 @@ public class Exercises {
         Log.LOGGER.info("Iniciando Ejercicio 4 ****");
         
         List<String> vmList = getVMNames(vboxManageFile, false);
-        String vmName = UI.chooseVm(vmList, false);
-        String desc = UI.askDesc(vmName);
+        String vmName = ConsoleUI.chooseVm(vmList, false);
+        String desc = ConsoleUI.askDesc(vmName);
         String descQuotes = "\"" + desc + "\"";
         CustomProcess ej4;
 
@@ -147,17 +147,17 @@ public class Exercises {
         ej4.runProcess();
 
         if (ej4.getExitValue() == null) {
-            UI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
-            UI.showErrMsg(Init.LOGMSG);
+            ConsoleUI.showErrMsg("Hubo un error al hacer la petición a vboxmanage");
+            ConsoleUI.showErrMsg(Log.LOGMSG);
 
         } else if (ej4.getExitValue() != 0) {
             String msg = String.format("vboxmanage devolvió error %d", ej4.getExitValue());
-            UI.showErrMsg(msg);
-            UI.showErrorProcessOutput(ej4);
+            ConsoleUI.showErrMsg(msg);
+            ConsoleUI.showErrorProcessOutput(ej4);
 
         } else {
             String msg = String.format("%nSe le asignó la nueva descripción a la máquina virtual %s%n", vmName);
-            UI.showInfoMsg(msg);
+            ConsoleUI.showInfoMsg(msg);
         }
     }
 
