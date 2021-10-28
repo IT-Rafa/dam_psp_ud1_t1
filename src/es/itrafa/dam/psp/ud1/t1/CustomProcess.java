@@ -1,8 +1,6 @@
 /*
  * File Name: CustomProcess.java
  * Project: dam_psp_ud1_t1
- * Enunciado completo en docs
- * Causa: Tarea para 
  *
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -19,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Clase para ejecutar proceso y capturar datos salida
  *
  * @author it-ra
  */
@@ -26,13 +25,13 @@ public class CustomProcess {
 
     //ATTRIBUTES
     // input
-    private final String EXERCISE;
-    private final File EXEFILE;
-    private final List<String> ARGS;
+    private final String EXERCISE; // Descripción ejercicio
+    private final File EXEFILE;// Archivo ejecutable
+    private final List<String> ARGS; // Argumentos enviados
     //output
-    private Integer exitValue;
-    private final List<String> stdout;
-    private final List<String> stderr;
+    private Integer exitValue; // valor de salida del programa (0 == exit)
+    private final List<String> stdout; // salida información
+    private final List<String> stderr; // salida errores
 
     // CONSTRUCTOR
     public CustomProcess(String ejercicio, File exeFile, List<String> args) {
@@ -64,6 +63,9 @@ public class CustomProcess {
         return stderr;
     }
 
+    /**
+     * Envia el proceso al sistema y captura la información de salida
+     */
     public void runProcess() {
         Runtime rt;
         rt = Runtime.getRuntime();

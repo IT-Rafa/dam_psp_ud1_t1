@@ -10,10 +10,8 @@
  */
 package es.itrafa.dam.psp.ud1.t1;
 
+import es.itrafa.util.console.Pause;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 /**
  * Define la puesta en marcha de la tarea
@@ -26,7 +24,7 @@ public class Init {
     private static final File EXEFILE = new File("C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe");
 
     /**
-     * Evita ejecución si instalación virtualBox es errónea e inicia la tarea
+     * Comprueba instalación virtualBox y, si es correcta, inicia tarea
      *
      * @param args
      */
@@ -36,25 +34,17 @@ public class Init {
         // COMPROBACIÓN REQUISITOS
         // Comprobación instalación previa programa virtualBox
         if (!Exercises.checkPath(EXEFILE)) {
-            ConsoleUI.showPathNoFound();
+            UI.showPathNoFound();
             System.exit(1);
         }
 
         // INICIO TAREA
-        while (true) {
-            int op;
-            String menuTitle = "Menú PSP_UD1_T1: vBox ejercicios";
-            List<String> optionsMenu = new ArrayList<>();
+        //Construccion menu
 
-            optionsMenu.add("Ej_1: Mostrar máquinas virtuales");
-            optionsMenu.add("Ej_2: Cambiar RAM a máquina virtual");
-            optionsMenu.add("Ej_3: Apagar máquina virtual");
-            optionsMenu.add("Ej_4: Cambiar descripción a máquina virtual");
-            optionsMenu.add("FIN PROGRAMA");
-            op = ConsoleUtil.getOpFromMenu(menuTitle, optionsMenu);
 
+        while (true) { // aparece menú hasta opcion salir 
+            int op = UI.getOpFromMainMenu();
             switch (op) {
-
                 case 1:
                     Exercises.runExercise1(EXEFILE);
                     break;
@@ -72,7 +62,7 @@ public class Init {
                     System.exit(0);
 
             }
-            ConsoleUtil.pressReturnKey("Presione Enter para volver a mostrar menú");
+            Pause.pressReturnToCont("Presione Enter para volver a mostrar menú");
         }
 
     }

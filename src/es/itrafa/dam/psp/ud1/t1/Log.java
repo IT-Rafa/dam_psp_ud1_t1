@@ -24,7 +24,7 @@ import java.util.logging.SimpleFormatter;
  */
 public class Log {
 
-    protected static final Logger LOGGER = Logger.getLogger(Log.class.getSimpleName());
+    public static final Logger LOGGER = Logger.getLogger(Log.class.getSimpleName());
     private static final File FILELOG = new File("logs//dam_psp_ud1_t1.log");
     // Mensage genérico información log
     protected static final String LOGMSG = "Revise \"logs/dam_psp_ud1_t1.log\" para mas detalles";

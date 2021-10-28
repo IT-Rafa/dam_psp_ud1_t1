@@ -3,52 +3,62 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package es.itrafa.dam.psp.ud1.t1;
+package es.itrafa.util.console;
 
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * Collection of utilities for User interactions in console
+ * Create a menu for console to show formated menu with the options, ask user
+ * to select and check that selection is one of options.
  *
  * @author it-ra
  */
-public class ConsoleUtil {
+public class AskOpFromMenu {
 
+    private final String title;
+    private List<String> options;
+    private int selectedOption;
+
+    // CONSTRUCTOR
+    public AskOpFromMenu(String menuTitle, List<String> optionsMenu) {
+        this.title = menuTitle;
+        this.options = optionsMenu;
+    }
+
+    // GETTER & SETTER
     /**
-     * Show a console menu with the title, and the options from arguments. This
-     * menu will be displayed again until a right option be selected by user.
-     * The options are numbered correlatively from one.
-     *
-     * @param menuTitle String title of menu
-     * @param optionsMenu List<String> List of options to show
-     * @return int - The option selected by user
+     * @return the selectedOption
      */
-    public static int getOpFromMenu(String menuTitle, List<String> optionsMenu) {
-        int op;
+    public int getSelectedOption() {
+        return selectedOption;
+    }
+
+    // METHODS
+    public int showAndAsk() {
 
         int maxLenght; // cant of chars for menu border == The longest line
-        maxLenght = menuTitle.length();
+        maxLenght = title.length();
 
         do {
             // Calcule max lenght of options
-            for (String opMenu : optionsMenu) {
+            for (String opMenu : options) {
                 if (opMenu.length() > maxLenght) {
                     maxLenght = opMenu.length();
                 }
             }
-            // Menu Header
+            // AskInteger Header
             maxLenght += 10; // space for option number
             for (int i = 0; i < maxLenght; i++) {
                 System.out.printf("%c", '=');
             }
             System.out.println();
 
-            String bordertitle = String.format("| %s", menuTitle);
+            String bordertitle = String.format("| %s", title);
             System.out.printf(bordertitle);
 
-            for (int i = 0; i < (maxLenght - bordertitle.length())-1; i++) {
+            for (int i = 0; i < (maxLenght - bordertitle.length()) - 1; i++) {
                 System.out.print(" ");
             }
             System.out.printf("|%n");
@@ -58,10 +68,10 @@ public class ConsoleUtil {
             }
             System.out.println();
 
-            // Menu options 
+            // AskInteger options 
             int opNum = 1; // Options start with one
-            for (String opMenu : optionsMenu) {
-                String option = String.format("|  %d: %s", opNum++, opMenu);
+            for (String op : options) {
+                String option = String.format("|  %d: %s", opNum++, op);
                 System.out.printf(option);
 
                 for (int i = 0; i < (maxLenght - option.length() - 1); i++) {
@@ -78,29 +88,19 @@ public class ConsoleUtil {
             // ask user to select a option 
             try {
                 Scanner input = new Scanner(System.in);
-                op = input.nextInt();
+                selectedOption = input.nextInt();
             } catch (InputMismatchException ex) {
-                op = 0;
+                selectedOption = 0;
             }
             // check if is a valid option
-            if (op < 1 || op > optionsMenu.size()) {
+            if (selectedOption < 1 || selectedOption > options.size()) {
                 System.out.printf("Opción no válida. Seleccione opción del menú%n%n");
-                op = 0;
+                selectedOption = 0;
             }
-        } while (op == 0); // zero is never a valid option
+        } while (selectedOption == 0); // zero is never a valid option
 
         System.out.println();
-        return op;
+        return selectedOption;
     }
 
-    public static void pressReturnKey(String msg) {
-        try {
-            System.out.println(msg);
-            Scanner input = new Scanner(System.in);
-            input.nextLine();
-        } catch (InputMismatchException ex) {
-
-        }
-
-    }
 }
